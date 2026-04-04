@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>なぞとき管理画面</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Noto+Sans+JP:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-font-smoothing:antialiased;}
+body{font-family:'Noto Sans JP',sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh;overflow-x:hidden;}
+:root{
+  --bg:#0f1117;--s1:#161b27;--s2:#1e2435;--s3:#242d40;
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.13);
+  --blue:#4f8ef7;--blue-d:rgba(79,142,247,.14);--blue-b:rgba(79,142,247,.35);
+  --green:#34d399;--amber:#fbbf24;--red:#f87171;--purple:#a78bfa;
+  --text:#e2e8f0;--muted:rgba(226,232,240,.38);--muted2:rgba(226,232,240,.6);
+  --orange:#f97316;--orange-d:rgba(249,115,22,.14);--orange-b:rgba(249,115,22,.35);
+  --r:10px;--r-lg:16px;--r-xl:22px;
+}
+
+/* ── Nav ── */
+.nav{position:sticky;top:0;z-index:300;height:54px;background:rgba(15,17,23,.92);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);display:flex;align-items:center;}
+.nav-inner{width:100%;max-width:1400px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;color:#f97316;letter-spacing:.05em;}
+.nav-info{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;display:flex;align-items:center;gap:10px;}
+.nav-proj-badge{background:var(--orange-d);border:1px solid var(--orange-b);border-radius:100px;padding:3px 12px;color:#fb923c;font-size:10px;font-weight:700;}
+.nav-player-btn{font-size:11px;color:var(--muted2);text-decoration:none;padding:5px 14px;border:1px solid var(--border2);border-radius:100px;transition:all .15s;}
+.nav-player-btn:hover{color:var(--text);border-color:var(--border2);}
+
+/* ── 案件選択 ── */
+#proj-screen{max-width:1000px;margin:0 auto;padding:52px 24px 40px;}
+.proj-top{text-align:center;margin-bottom:48px;}
+.proj-ey{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.28em;color:var(--blue);text-transform:uppercase;margin-bottom:12px;}
+.proj-h{font-family:'Nunito',sans-serif;font-size:40px;font-weight:800;color:var(--text);margin-bottom:6px;line-height:1.2;}
+.proj-sub{font-size:13px;color:var(--muted2);}
+.proj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px;}
+.pcard{background:var(--s1);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;cursor:pointer;transition:all .22s;position:relative;}
+.pcard:hover{border-color:rgba(79,142,247,.35);transform:translateY(-3px);box-shadow:0 14px 40px rgba(0,0,0,.5);}
+.pcard::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--blue);opacity:0;transition:opacity .2s;}
+.pcard:hover::after{opacity:1;}
+.pthumb{width:100%;aspect-ratio:16/8;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:40px;position:relative;overflow:hidden;}
+.pthumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.sdot{position:absolute;top:9px;right:9px;width:8px;height:8px;border-radius:50%;}
+.sdot.live{background:var(--green);box-shadow:0 0 0 3px rgba(52,211,153,.2);animation:sdp 2s infinite;}
+.sdot.draft{background:var(--amber);}
+.sdot.ended{background:rgba(255,255,255,.18);}
+@keyframes sdp{0%,100%{box-shadow:0 0 0 3px rgba(52,211,153,.2)}50%{box-shadow:0 0 0 8px rgba(52,211,153,.04)}}
+.pinfo{padding:16px 18px 18px;}
+.pname{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.3;}
+.psub{font-size:11px;color:var(--muted2);margin-bottom:12px;}
+.pstats{display:flex;gap:16px;}
+.pstat-n{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;color:var(--text);line-height:1;}
+.pstat-l{font-size:9px;letter-spacing:.1em;color:var(--muted);margin-top:2px;}
+.pnew{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:100%;padding:28px;background:transparent;border:1px dashed rgba(255,255,255,.1);border-radius:var(--r-xl);cursor:pointer;transition:all .2s;color:rgba(255,255,255,.2);font-family:'Noto Sans JP',sans-serif;}
+.pnew:hover{border-color:rgba(79,142,247,.3);color:rgba(79,142,247,.65);background:rgba(79,142,247,.03);}
+
+/* ── メインレイアウト ── */
+#admin-main{display:none;}
+#admin-main.on{display:flex;min-height:calc(100vh - 54px);}
+.sidebar{width:216px;flex-shrink:0;background:var(--s1);border-right:1px solid var(--border);padding:14px 0;position:sticky;top:54px;height:calc(100vh - 54px);overflow-y:auto;}
+.sb-proj{padding:0 14px 14px;border-bottom:1px solid var(--border);margin-bottom:8px;}
+.sb-back{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);cursor:pointer;margin-bottom:9px;background:none;border:none;font-family:'Noto Sans JP',sans-serif;padding:0;transition:color .15s;}
+.sb-back:hover{color:var(--text);}
+.sb-pname{font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;line-height:1.35;}
+.sb-bdg{display:inline-flex;align-items:center;gap:4px;font-size:9px;padding:2px 8px;border-radius:100px;font-weight:700;letter-spacing:.05em;}
+.sb-bdg.live{background:rgba(52,211,153,.1);color:var(--green);}
+.sb-bdg.draft{background:rgba(251,191,36,.1);color:var(--amber);}
+.sb-bdg.ended{background:rgba(255,255,255,.05);color:var(--muted);}
+.sb-sec{padding:0 7px 10px;}
+.sb-sec-lbl{font-size:9px;letter-spacing:.18em;color:rgba(255,255,255,.18);text-transform:uppercase;padding:0 7px;margin-bottom:3px;}
+.sbi{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:9px;font-size:12px;font-weight:500;color:rgba(226,232,240,.42);cursor:pointer;transition:all .12s;margin-bottom:1px;border:1px solid transparent;}
+.sbi:hover{background:rgba(255,255,255,.04);color:var(--text);}
+.sbi.on{background:var(--blue-d);color:#7ab4ff;border-color:var(--blue-b);}
+.sbi-ic{font-size:13px;width:17px;text-align:center;}
+.sbi-red{margin-left:auto;background:var(--red);color:#fff;border-radius:100px;padding:1px 6px;font-size:9px;font-weight:700;font-family:'DM Mono',monospace;}
+
+.content{flex:1;min-width:0;padding:24px 28px;background:var(--bg);overflow-y:auto;}
+.page{display:none;}
+.page.on{display:block;animation:pin .18s ease;}
+@keyframes pin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ph{font-family:'Nunito',sans-serif;font-size:28px;font-weight:800;color:var(--text);margin-bottom:4px;}
+.psub2{font-size:12px;color:var(--muted2);margin-bottom:24px;}
+
+/* カード */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r-xl);padding:20px;}
+.card+.card{margin-top:14px;}
+.card-h{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text);margin-bottom:14px;padding-bottom:11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px;justify-content:space-between;}
+.card-h-left{display:flex;align-items:center;gap:7px;}
+
+/* フォーム */
+.field{margin-bottom:16px;}
+.lbl{display:block;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:6px;}
+.req{color:var(--red);margin-left:2px;}
+.inp,.ta,.sel{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:var(--r);padding:9px 12px;font-size:13px;font-family:'Noto Sans JP',sans-serif;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s;appearance:none;}
+.inp:focus,.ta:focus,.sel:focus{border-color:rgba(79,142,247,.45);box-shadow:0 0 0 3px rgba(79,142,247,.08);}
+.inp::placeholder,.ta::placeholder{color:rgba(226,232,240,.18);}
+.ta{resize:vertical;min-height:90px;line-height:1.7;}
+.inp-note{font-size:10px;color:var(--muted);margin-top:4px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.row2b{display:grid;grid-template-columns:68px 1fr;gap:12px;}
+
+/* 画像ゾーン */
+.iz{border:1px dashed rgba(255,255,255,.11);border-radius:var(--r-lg);background:rgba(255,255,255,.02);min-height:110px;padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;position:relative;overflow:hidden;cursor:pointer;transition:all .18s;text-align:center;}
+.iz:hover{border-color:rgba(79,142,247,.28);background:rgba(79,142,247,.03);}
+.iz.on{border-style:solid;border-color:rgba(52,211,153,.3);padding:0;}
+.iz input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2;}
+.iz-ico{font-size:22px;opacity:.3;pointer-events:none;}
+.iz-txt{font-size:11px;font-weight:500;color:var(--muted2);pointer-events:none;}
+.iz-sub{font-size:9px;color:rgba(226,232,240,.16);pointer-events:none;}
+.iz img.prev{display:none;width:100%;max-height:180px;object-fit:cover;}
+.iz.on img.prev{display:block;}
+.iz.on .iz-ico,.iz.on .iz-txt,.iz.on .iz-sub{display:none;}
+.iz-clr{display:none;position:absolute;top:7px;right:7px;z-index:3;background:rgba(0,0,0,.7);border:none;border-radius:6px;color:#fff;font-size:10px;padding:3px 9px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;}
+.iz.on .iz-clr{display:block;}
+
+/* 問題画像 複数追加 */
+.multi-imgs{display:flex;flex-direction:column;gap:8px;}
+.img-item{display:flex;align-items:center;gap:8px;padding:8px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--r);}
+.img-item-thumb{width:60px;height:40px;border-radius:6px;overflow:hidden;background:var(--s2);flex-shrink:0;}
+.img-item-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.img-item-info{flex:1;min-width:0;font-size:11px;color:var(--muted2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.img-item-del{background:none;border:1px solid rgba(255,255,255,.08);border-radius:6px;color:var(--muted);font-size:11px;padding:3px 9px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .12s;}
+.img-item-del:hover{border-color:rgba(248,113,113,.4);color:var(--red);}
+.add-img-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:9px;border:1px dashed rgba(255,255,255,.1);border-radius:var(--r);cursor:pointer;font-size:11px;color:var(--muted);transition:all .15s;position:relative;font-family:'Noto Sans JP',sans-serif;background:none;}
+.add-img-btn:hover{border-color:rgba(79,142,247,.3);color:#7ab4ff;}
+.add-img-btn input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+
+/* ヒント（画像対応・最大10） */
+.hint-list{display:flex;flex-direction:column;gap:8px;}
+.hint-item-row{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--r-lg);padding:10px 12px;}
+.hint-item-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.hint-n{width:22px;height:22px;background:var(--blue-d);border:1px solid var(--blue-b);border-radius:6px;display:grid;place-items:center;color:#7ab4ff;font-size:9px;font-weight:700;flex-shrink:0;font-family:'DM Mono',monospace;}
+.hint-inp-wrap{flex:1;min-width:0;}
+.hdel{width:22px;height:22px;background:none;border:1px solid rgba(255,255,255,.08);border-radius:6px;cursor:pointer;color:var(--muted);font-size:11px;display:grid;place-items:center;flex-shrink:0;transition:all .12s;}
+.hdel:hover{border-color:rgba(248,113,113,.4);color:var(--red);}
+.hint-img-row{display:flex;align-items:center;gap:8px;margin-top:4px;}
+.hint-img-thumb{width:48px;height:32px;border-radius:6px;overflow:hidden;background:var(--s2);display:none;flex-shrink:0;}
+.hint-img-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.hint-img-thumb.show{display:block;}
+.hint-img-btn{font-size:10px;color:var(--muted);cursor:pointer;background:none;border:1px dashed rgba(255,255,255,.1);border-radius:6px;padding:3px 10px;font-family:'Noto Sans JP',sans-serif;transition:all .12s;position:relative;}
+.hint-img-btn:hover{border-color:rgba(79,142,247,.3);color:#7ab4ff;}
+.hint-img-btn input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.hint-img-del{font-size:10px;color:var(--muted);cursor:pointer;background:none;border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:3px 9px;font-family:'Noto Sans JP',sans-serif;display:none;}
+.hint-img-del.show{display:inline-flex;}
+.add-hint-btn{margin-top:8px;background:none;border:1px dashed rgba(255,255,255,.09);border-radius:var(--r);padding:7px;font-size:11px;color:var(--muted);cursor:pointer;width:100%;font-family:'Noto Sans JP',sans-serif;transition:all .15s;}
+.add-hint-btn:hover{border-color:rgba(79,142,247,.3);color:#7ab4ff;}
+
+/* スタンプ */
+.stamp-tabs{display:flex;gap:4px;margin-bottom:9px;}
+.stab{padding:4px 12px;border-radius:100px;font-size:10px;font-weight:700;border:1px solid rgba(255,255,255,.09);cursor:pointer;color:var(--muted);background:transparent;transition:all .12s;font-family:'Noto Sans JP',sans-serif;}
+.stab.on{border-color:var(--blue-b);color:#7ab4ff;background:var(--blue-d);}
+.sea,.sia{display:none;}
+.sea.on,.sia.on{display:block;}
+.spg{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;}
+.spo{aspect-ratio:1;border:1px solid rgba(255,255,255,.08);border-radius:8px;display:grid;place-items:center;font-size:17px;cursor:pointer;transition:all .12s;background:rgba(255,255,255,.02);}
+.spo:hover{border-color:var(--blue-b);background:var(--blue-d);transform:scale(1.08);}
+.spo.on{border-color:var(--blue-b);background:var(--blue-d);box-shadow:0 0 0 2px rgba(79,142,247,.12);}
+
+/* ボタン */
+.btns{display:flex;gap:8px;flex-wrap:wrap;}
+.btn{padding:9px 20px;border-radius:100px;border:none;font-size:11px;font-weight:700;cursor:pointer;transition:all .12s;font-family:'Noto Sans JP',sans-serif;display:flex;align-items:center;gap:6px;letter-spacing:.04em;white-space:nowrap;}
+.btn-p{background:var(--blue);color:#fff;}
+.btn-p:hover{background:#6ea3fa;transform:translateY(-1px);box-shadow:0 4px 16px rgba(79,142,247,.4);}
+.btn-g{background:transparent;border:1px solid rgba(255,255,255,.1);color:var(--muted2);}
+.btn-g:hover{border-color:rgba(255,255,255,.2);color:var(--text);}
+.btn-orange{background:var(--orange);color:#fff;}
+.btn-orange:hover{background:#fb923c;}
+
+/* テーブル */
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{text-align:left;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:9px 12px;border-bottom:1px solid var(--border);}
+.tbl td{padding:11px 12px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text);vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:rgba(255,255,255,.02);}
+.nbadge{font-family:'DM Mono',monospace;font-size:10px;width:24px;height:24px;background:var(--blue-d);color:#7ab4ff;border-radius:6px;display:inline-grid;place-items:center;border:1px solid var(--blue-b);}
+.apill{font-family:'DM Mono',monospace;background:rgba(255,255,255,.06);padding:2px 9px;border-radius:5px;font-size:10px;color:rgba(226,232,240,.65);}
+.tbl-acts{display:flex;gap:4px;}
+.ico-btn{width:26px;height:26px;border-radius:7px;border:1px solid var(--border);background:transparent;display:grid;place-items:center;font-size:11px;cursor:pointer;transition:all .12s;color:var(--muted);}
+.ico-btn:hover{border-color:var(--blue-b);color:#7ab4ff;background:var(--blue-d);}
+.ico-btn.del:hover{border-color:rgba(248,113,113,.4);color:var(--red);background:rgba(248,113,113,.05);}
+.sthumb{width:26px;height:26px;border-radius:6px;background:rgba(255,255,255,.05);display:inline-flex;align-items:center;justify-content:center;font-size:14px;overflow:hidden;vertical-align:middle;}
+.sthumb img{width:100%;height:100%;object-fit:cover;}
+
+/* 特典リスト */
+.reward-rows{display:flex;flex-direction:column;gap:10px;}
+.reward-row{background:var(--s2);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;}
+.reward-row-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.reward-row-n{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--amber);width:20px;}
+.reward-row-del{margin-left:auto;width:24px;height:24px;background:none;border:1px solid rgba(255,255,255,.08);border-radius:6px;cursor:pointer;color:var(--muted);font-size:11px;display:grid;place-items:center;transition:all .12s;}
+.reward-row-del:hover{border-color:rgba(248,113,113,.4);color:var(--red);}
+.add-reward-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border:1px dashed rgba(255,255,255,.1);border-radius:var(--r-lg);cursor:pointer;font-size:11px;color:var(--muted);transition:all .15s;background:none;width:100%;font-family:'Noto Sans JP',sans-serif;}
+.add-reward-btn:hover{border-color:rgba(79,142,247,.3);color:#7ab4ff;}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.kpi{background:var(--s1);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;}
+.kpi-l{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.kpi-v{font-family:'Nunito',sans-serif;font-size:38px;font-weight:800;line-height:1;color:var(--text);}
+.kpi-v.blue{color:#7ab4ff;}.kpi-v.green{color:var(--green);}.kpi-v.amber{color:var(--amber);}.kpi-v.orange{color:var(--orange);}
+
+/* チームカード */
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;}
+.tcard{background:var(--s1);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px;transition:all .18s;}
+.tcard:hover{border-color:rgba(255,255,255,.13);}
+.tcard.hw{border-left:2px solid var(--amber);}
+.tt{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.tname{font-size:13px;font-weight:700;color:var(--text);}
+.tbdg{font-size:8px;padding:2px 8px;border-radius:100px;font-weight:700;letter-spacing:.05em;}
+.tbdg.active{background:rgba(52,211,153,.1);color:var(--green);}
+.tbdg.hint{background:rgba(251,191,36,.1);color:var(--amber);}
+.tbdg.clear{background:rgba(249,115,22,.1);color:var(--orange);}
+.tsteps{display:flex;gap:3px;margin-bottom:9px;}
+.tstep{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.07);transition:background .3s;}
+.tstep.d{background:var(--green);}.tstep.c{background:var(--blue);}
+.tmeta{display:flex;gap:12px;font-size:10px;color:var(--muted);}
+.tmeta strong{color:var(--text);}
+
+/* 分析 */
+.aitem{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.abar-bg{flex:1;height:5px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden;}
+.abar{height:100%;border-radius:3px;transition:width .7s ease;}
+
+/* toggle注意事項 */
+.tab-row{display:flex;gap:4px;margin-bottom:14px;}
+.tab-btn{padding:5px 16px;border-radius:100px;font-size:11px;font-weight:700;border:1px solid rgba(255,255,255,.09);cursor:pointer;color:var(--muted);background:transparent;transition:all .12s;font-family:'Noto Sans JP',sans-serif;}
+.tab-btn.on{border-color:var(--blue-b);color:#7ab4ff;background:var(--blue-d);}
+.tab-panel{display:none;}.tab-panel.on{display:block;}
+.caution-tpl-txt{font-size:12px;color:var(--muted2);line-height:1.9;white-space:pre-wrap;padding:14px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--r-lg);}
+
+/* フォームグリッド — 3カラム（フォーム / スタンプ+右設定 / プレビュー） */
+.fg{display:grid;grid-template-columns:1fr 260px 280px;gap:14px;margin-bottom:20px;align-items:start;}
+
+/* 常時プレビューパネル */
+.preview-panel{position:sticky;top:72px;}
+.preview-frame{
+  background:#f7f3ee;border-radius:16px;overflow:hidden;
+  border:2px solid rgba(249,115,22,.3);
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
+  font-family:'Noto Sans JP',sans-serif;color:#333;
+  font-size:12px;
+}
+.pv-header{background:linear-gradient(135deg,#f97316,#fb923c,#fbbf24);padding:10px 12px;display:flex;align-items:center;gap:8px;}
+.pv-logo{width:32px;height:32px;border-radius:9px;background:rgba(255,255,255,.3);border:1.5px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.pv-title{font-size:13px;font-weight:900;color:#fff;line-height:1.2;}
+.pv-sub{font-size:9px;color:rgba(255,255,255,.8);margin-top:1px;}
+.pv-body{padding:10px;}
+.pv-card{background:#fff;border-radius:10px;border:1.5px solid #e0d0bc;overflow:hidden;margin-bottom:8px;}
+.pv-thumb{width:100%;height:80px;background:#f0e8d8;display:flex;align-items:center;justify-content:center;font-size:28px;position:relative;overflow:hidden;}
+.pv-thumb img{width:100%;height:100%;object-fit:cover;}
+.pv-info{padding:8px 10px;}
+.pv-hook{font-size:9px;color:#7c3aed;font-weight:700;margin-bottom:3px;}
+.pv-story{font-size:9px;color:#999;margin-bottom:3px;}
+.pv-name{font-size:11px;font-weight:700;color:#222;margin-bottom:3px;}
+.pv-desc-txt{font-size:9px;color:#aaa;margin-bottom:5px;}
+.pv-row{display:flex;align-items:center;justify-content:space-between;}
+.pv-hint-badge{font-size:8px;color:#92400e;background:#fef9c3;border:1px solid #fbbf24;border-radius:99px;padding:2px 7px;}
+.pv-status{font-size:9px;font-weight:700;padding:3px 9px;border-radius:99px;}
+.pv-status.todo{background:#ffedd5;color:#c2410c;}
+.pv-status.done{background:#dcfce7;color:#15803d;}
+.pv-q-text{font-size:10px;line-height:1.6;color:#444;padding:8px 10px;border-top:1px dashed #f0e8d8;display:none;}
+.pv-card.expanded .pv-q-text{display:block;}
+.pv-label{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;padding:6px 10px 0;border-top:1px solid rgba(255,255,255,.05);}
+
+/* ヒント使用数バー */
+.hint-stat-bar{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.hint-stat-bar:last-child{margin-bottom:0;}
+.hint-stat-q{width:120px;flex-shrink:0;font-size:11px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.hint-stat-track{flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;}
+.hint-stat-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--amber),#fb923c);transition:width .6s ease;}
+.hint-stat-num{width:48px;text-align:right;font-size:11px;color:var(--amber);font-family:'DM Mono',monospace;flex-shrink:0;}
+
+/* トースト */
+.toasts{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column-reverse;gap:7px;}
+.toast{background:rgba(14,17,26,.96);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:100px;padding:8px 18px;font-size:11px;color:var(--text);min-width:180px;box-shadow:0 6px 28px rgba(0,0,0,.5);animation:tin .22s ease;white-space:nowrap;border-left:3px solid var(--green);}
+.toast.err{border-left-color:var(--red);}
+@keyframes tin{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+
+@media(max-width:900px){
+  .proj-grid{grid-template-columns:1fr 1fr;}
+  .fg{grid-template-columns:1fr;}
+  .kpi-row{grid-template-columns:repeat(2,1fr);}
+  .sidebar{display:none;}
+  .content{padding:16px;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">🔍 NAZO HOST</div>
+    <div class="nav-info">
+      <span id="nav-proj-badge" class="nav-proj-badge" style="display:none"></span>
+      <a class="nav-player-btn" href="nazo-player.html" target="_blank">参加者ページ →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ════ 案件選択 ════ -->
+<div id="proj-screen">
+  <div class="proj-top">
+    <div class="proj-ey">Host Console</div>
+    <h2 class="proj-h">案件を選択</h2>
+    <p class="proj-sub">管理するイベントを選んでください</p>
+  </div>
+  <div class="proj-grid" id="proj-grid"></div>
+  <button class="pnew" onclick="newProj()">
+    <span style="font-size:24px">＋</span>
+    <span style="font-size:12px;font-weight:700">新しい案件を作成</span>
+  </button>
+</div>
+
+<!-- ════ 管理メイン ════ -->
+<div id="admin-main">
+  <div class="sidebar">
+    <div class="sb-proj">
+      <button class="sb-back" onclick="backToProj()">← 案件一覧</button>
+      <div class="sb-pname" id="sb-pname"></div>
+      <span class="sb-bdg live" id="sb-bdg">● LIVE</span>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-sec-lbl">コンテンツ</div>
+      <div class="sbi on" onclick="gp('create',this)"><span class="sbi-ic">✦</span>問題を作成</div>
+      <div class="sbi" onclick="gp('list',this)"><span class="sbi-ic">≡</span>問題一覧</div>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-sec-lbl">イベント設定</div>
+      <div class="sbi" onclick="gp('event',this)"><span class="sbi-ic">◇</span>基本情報</div>
+      <div class="sbi" onclick="gp('media',this)"><span class="sbi-ic">⊞</span>画像設定</div>
+      <div class="sbi" onclick="gp('time',this)"><span class="sbi-ic">⏱</span>時間・期間設定</div>
+      <div class="sbi" onclick="gp('reward',this)"><span class="sbi-ic">🏆</span>特典設定</div>
+      <div class="sbi" onclick="gp('caution',this)"><span class="sbi-ic">!</span>注意事項</div>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-sec-lbl">モニタリング</div>
+      <div class="sbi" onclick="gp('live',this)"><span class="sbi-ic">◉</span>ライブ進捗<span class="sbi-red" id="hint-badge">2</span></div>
+      <div class="sbi" onclick="gp('analysis',this)"><span class="sbi-ic">▦</span>結果・分析</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- 問題作成 -->
+    <div class="page on" id="p-create">
+      <div class="ph">問題を作成</div>
+      <div class="psub2">問題文・画像・正解・ヒントを入力して保存してください</div>
+      <div class="fg">
+        <div>
+          <div class="card">
+            <div class="card-h"><span class="card-h-left">基本情報</span></div>
+            <div class="row2b" style="margin-bottom:14px">
+              <div class="field" style="margin-bottom:0"><label class="lbl">No.<span class="req">*</span></label><input class="inp" type="number" min="1" max="99" value="1" id="f-no"></div>
+              <div class="field" style="margin-bottom:0"><label class="lbl">タイトル<span class="req">*</span></label><input class="inp" id="f-title" placeholder="例：公園の謎①"></div>
+            </div>
+            <div class="field"><label class="lbl">問題文<span class="req">*</span></label><textarea class="ta" id="f-q" rows="4" placeholder="問題文を入力してください"></textarea></div>
+            <div class="field"><label class="lbl">正解<span class="req">*</span></label><input class="inp" id="f-ans" placeholder="例：さくら"><p class="inp-note">大文字・小文字・全角・半角を区別しません</p></div>
+            <div class="field"><label class="lbl">スポット説明文</label><input class="inp" id="f-desc" placeholder="例：ヒントをもとに答えを探そう！"></div>
+            <div class="field"><label class="lbl">👨‍👩‍👧 家族向け煽り文 <span style="font-weight:400;color:var(--muted)">（問題カードに表示）</span></label><input class="inp" id="f-hook" placeholder="例：🧒 子どもへ：パネルをよーく見てね！"><p class="inp-note">誰に向けたメッセージかを入れると家族の役割分担が生まれます</p></div>
+            <div class="field"><label class="lbl">📖 ストーリー文 <span style="font-weight:400;color:var(--muted)">（問題前の一言）</span></label><input class="inp" id="f-story" placeholder="例：冒険のスタート！まず噴水のひみつを解き明かせ！"></div>
+            <div class="field"><label class="lbl">🗺 次の謎への誘導文 <span style="font-weight:400;color:var(--muted)">（正解後に表示）</span></label><input class="inp" id="f-next" placeholder="例：噴水の近くに花がたくさん咲いているよ。次はそこへGO！"><p class="inp-note">正解したあとに表示されます。次のスポットへの誘導に使ってください</p></div>
+            <div class="row2">
+              <div class="field" style="margin-bottom:0"><label class="lbl">公開状態</label><select class="sel" id="f-status"><option value="published">✅ 公開中</option><option value="draft">📝 下書き</option><option value="hidden">🔒 非公開</option></select></div>
+            </div>
+          </div>
+
+          <!-- 問題画像（複数） -->
+          <div class="card">
+            <div class="card-h"><span class="card-h-left">問題画像 <span style="font-size:10px;font-weight:400;color:var(--muted)">複数追加可</span></span></div>
+            <div class="multi-imgs" id="quiz-imgs-list"></div>
+            <label class="add-img-btn" style="margin-top:8px">
+              <input type="file" accept="image/*" onchange="addQuizImg(this)">
+              <span>＋ 画像を追加</span>
+            </label>
+          </div>
+
+          <!-- ヒント（最大10・画像付き） -->
+          <div class="card">
+            <div class="card-h">
+              <span class="card-h-left">ヒント設定</span>
+              <span style="font-size:10px;font-weight:400;color:var(--muted)">最大10段階・画像添付可</span>
+            </div>
+            <div class="hint-list" id="hint-list"></div>
+            <button class="add-hint-btn" onclick="addHint()">＋ ヒントを追加</button>
+          </div>
+        </div>
+
+        <div>
+          <!-- スタンプアイコン -->
+          <div class="card">
+            <div class="card-h"><span class="card-h-left">スタンプアイコン</span></div>
+            <p style="font-size:10px;color:var(--muted2);margin-bottom:9px">正解時にスタンプボードに押されるアイコン</p>
+            <div class="stamp-tabs">
+              <button class="stab on" onclick="swSTab('e',this)">絵文字</button>
+              <button class="stab" onclick="swSTab('i',this)">画像</button>
+            </div>
+            <div class="sea on" id="stab-e"><div class="spg" id="stamp-picker"></div></div>
+            <div class="sia" id="stab-i">
+              <div class="iz" id="simg-z" style="min-height:85px">
+                <input type="file" accept="image/*" onchange="hImg(this,'simg-z','simg-p','si')">
+                <div class="iz-ico">🎨</div><div class="iz-txt">スタンプ画像（正方形推奨）</div>
+                <img class="prev" id="simg-p">
+                <button class="iz-clr" onclick="cImg(event,'simg-z','simg-p','si')">✕</button>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h"><span class="card-h-left">別タブで確認</span></div>
+            <button class="btn btn-g" style="width:100%;justify-content:center" onclick="window.open('nazo-player.html','_blank')">参加者ページを開く</button>
+          </div>
+        </div>
+
+        <!-- ★ 常時プレビューパネル（右端固定） ★ -->
+        <div class="preview-panel">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">ライブプレビュー</div>
+          <div class="preview-frame">
+            <div class="pv-header">
+              <div class="pv-logo">🔍</div>
+              <div>
+                <div class="pv-title" id="pv-ev-title">なぞときスタンプラリー</div>
+                <div class="pv-sub">参加者から見える表示</div>
+              </div>
+            </div>
+            <div class="pv-body">
+              <div class="pv-label">問題カード プレビュー</div>
+              <div class="pv-card expanded" id="pv-card">
+                <div class="pv-thumb" id="pv-thumb"><span id="pv-emoji">🔍</span></div>
+                <div class="pv-info">
+                  <div class="pv-hook" id="pv-hook"></div>
+                  <div class="pv-story" id="pv-story"></div>
+                  <div class="pv-name" id="pv-name">タイトルがここに表示</div>
+                  <div class="pv-desc-txt" id="pv-desc-txt"></div>
+                  <div class="pv-row">
+                    <div class="pv-hint-badge" id="pv-hint-badge">💡 ヒント 0回</div>
+                    <div class="pv-status todo" id="pv-status">挑戦中</div>
+                  </div>
+                </div>
+                <div class="pv-q-text" id="pv-q-text">（問題文がここに表示されます）</div>
+              </div>
+              <div class="pv-label">次の謎への誘導</div>
+              <div id="pv-next" style="font-size:9px;color:#5b21b6;background:#f5f3ff;border-left:2px solid #7c3aed;border-radius:0 8px 8px 0;padding:7px 9px;margin-bottom:6px;min-height:28px;line-height:1.5;"></div>
+            </div>
+          </div>
+          <div style="margin-top:10px;font-size:9px;color:var(--muted);text-align:center;">フォームを入力すると自動で反映されます</div>
+        </div>
+      </div>
+      <div class="btns">
+        <button class="btn btn-p" onclick="saveQ()">保存して公開</button>
+        <button class="btn btn-g" onclick="saveDraft()">下書き保存</button>
+        <button class="btn btn-g" onclick="resetForm()">リセット</button>
+      </div>
+    </div>
+
+    <!-- 問題一覧 -->
+    <div class="page" id="p-list">
+      <div class="ph">問題一覧</div>
+      <div class="psub2">✏ で編集フォームに読み込み</div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table class="tbl">
+          <thead><tr><th>No.</th><th>タイトル</th><th>正解</th><th>画像</th><th>スタンプ</th><th>状態</th><th></th></tr></thead>
+          <tbody id="q-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 基本情報 -->
+    <div class="page" id="p-event">
+      <div class="ph">基本情報</div>
+      <div class="psub2">イベント名・サブタイトル・主催者情報を設定します</div>
+      <div class="card">
+        <div class="card-h"><span class="card-h-left">イベント基本情報</span></div>
+        <div class="field"><label class="lbl">イベント名<span class="req">*</span></label><input class="inp" id="ev-name" value="なぞときスタンプラリー"></div>
+        <div class="field"><label class="lbl">サブタイトル</label><input class="inp" id="ev-sub" value="スタンプを集めて特典をゲットしよう！"></div>
+        <div class="field"><label class="lbl">主催者名</label><input class="inp" id="ev-org" value="実行委員会"></div>
+        <div class="field" style="margin-bottom:0"><label class="lbl">お問い合わせ</label><input class="inp" id="ev-contact" placeholder="TEL: 000-000-0000"></div>
+        <div class="field" style="margin-top:16px">
+          <label class="lbl">🗂 スポット（問題一覧）の見出し名</label>
+          <select class="sel" id="ev-spot-label" style="color:rgba(226,232,240,.85)">
+            <option value="対象スポット">対象スポット</option>
+            <option value="ミッション一覧">ミッション一覧</option>
+            <option value="なぞとき一覧">なぞとき一覧</option>
+            <option value="問題一覧">問題一覧</option>
+            <option value="チャレンジ一覧">チャレンジ一覧</option>
+            <option value="クイズ一覧">クイズ一覧</option>
+            <option value="スポット一覧">スポット一覧</option>
+            <option value="ステージ一覧">ステージ一覧</option>
+          </select>
+          <p class="inp-note">参加者ページの問題リストの見出しとして表示されます</p>
+        </div>
+        <div style="margin-top:16px"><button class="btn btn-p" onclick="saveEvent()">保存して反映</button></div>
+      </div>
+    </div>
+
+    <!-- 画像設定 -->
+    <div class="page" id="p-media">
+      <div class="ph">画像設定</div>
+      <div class="psub2">全体のトップ画像・背景画像・ロゴを設定します</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="card">
+          <div class="card-h"><span class="card-h-left">全体トップ画像</span></div>
+          <p style="font-size:10px;color:var(--muted2);margin-bottom:10px">参加者ページのヘッダー下部に表示される大きなメイン画像</p>
+          <div class="iz" id="hero-z">
+            <input type="file" accept="image/*" onchange="hHero(this)">
+            <div class="iz-ico">🖼</div><div class="iz-txt">トップ画像をアップロード</div><div class="iz-sub">横長推奨 (16:9)</div>
+            <img class="prev" id="hero-p">
+            <button class="iz-clr" onclick="cHero(event)">✕ 削除</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-h"><span class="card-h-left">全体背景画像</span></div>
+          <p style="font-size:10px;color:var(--muted2);margin-bottom:10px">ページ全体の背景として表示される画像（※参加者ページはライト背景のため基本不要）</p>
+          <div class="iz" id="bg-z">
+            <input type="file" accept="image/*" onchange="hBg(this)">
+            <div class="iz-ico">🌅</div><div class="iz-txt">背景画像をアップロード</div><div class="iz-sub">横長推奨</div>
+            <img class="prev" id="bg-p">
+            <button class="iz-clr" onclick="cBg(event)">✕ 削除</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-h"><span class="card-h-left">ヘッダーロゴ</span></div>
+          <p style="font-size:10px;color:var(--muted2);margin-bottom:10px">ヘッダー左のアイコン。正方形PNG推奨。</p>
+          <div class="iz" id="logo-z" style="min-height:90px">
+            <input type="file" accept="image/*" onchange="hLogo(this)">
+            <div class="iz-ico">◈</div><div class="iz-txt">ロゴをアップロード</div>
+            <img class="prev" id="logo-p">
+            <button class="iz-clr" onclick="cLogo(event)">✕</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 時間・期間設定 -->
+    <div class="page" id="p-time">
+      <div class="ph">時間・期間設定</div>
+      <div class="psub2">公開期間・スタンプ取得可能時間・特典引き換え可能時間を設定します</div>
+      <div style="display:grid;grid-template-columns:1fr;gap:14px">
+        <div class="card">
+          <div class="card-h"><span class="card-h-left">📅 公開期間</span></div>
+          <div class="row2">
+            <div class="field"><label class="lbl">開始日時</label><input class="inp" type="datetime-local" id="t-pub-start"></div>
+            <div class="field"><label class="lbl">終了日時</label><input class="inp" type="datetime-local" id="t-pub-end"></div>
+          </div>
+          <p class="inp-note">公開期間外はスタンプラリーにアクセスできなくなります</p>
+        </div>
+        <div class="card">
+          <div class="card-h"><span class="card-h-left">⏱ スタンプ取得可能時間（毎日）</span></div>
+          <div class="row2">
+            <div class="field"><label class="lbl">開始時刻</label><input class="inp" type="time" id="t-stamp-start" value="09:00"></div>
+            <div class="field"><label class="lbl">終了時刻</label><input class="inp" type="time" id="t-stamp-end" value="17:00"></div>
+          </div>
+          <p class="inp-note">空欄にすると終日取得可能になります</p>
+        </div>
+        <div class="card">
+          <div class="card-h"><span class="card-h-left">🎁 特典引き換え可能時間</span></div>
+          <div class="row2">
+            <div class="field"><label class="lbl">開始日時</label><input class="inp" type="datetime-local" id="t-reward-start"></div>
+            <div class="field"><label class="lbl">終了日時</label><input class="inp" type="datetime-local" id="t-reward-end"></div>
+          </div>
+          <div class="field" style="margin-top:4px"><label class="lbl">受付場所</label><input class="inp" id="t-reward-place" placeholder="例：1Fインフォメーションカウンター"></div>
+          <p class="inp-note">空欄にすると常時引き換え可能になります</p>
+        </div>
+      </div>
+      <div class="btns" style="margin-top:16px"><button class="btn btn-p" onclick="saveTime()">保存して反映</button></div>
+    </div>
+
+    <!-- 特典設定 -->
+    <div class="page" id="p-reward">
+      <div class="ph">特典設定</div>
+      <div class="psub2">スタンプ獲得数ごとに特典を設定できます。全問正解特典は「allClear」にチェックを入れてください。</div>
+      <div class="card">
+        <div class="card-h"><span class="card-h-left">クリア特典一覧</span></div>
+        <div class="reward-rows" id="reward-rows"></div>
+        <button class="add-reward-btn" style="margin-top:10px" onclick="addReward()">＋ 特典を追加</button>
+        <div class="btns" style="margin-top:16px"><button class="btn btn-p" onclick="saveRewards()">保存して反映</button></div>
+      </div>
+    </div>
+
+    <!-- 注意事項 -->
+    <div class="page" id="p-caution">
+      <div class="ph">注意事項</div>
+      <div class="psub2">テンプレートまたはカスタム入力を切り替えられます</div>
+      <div class="card">
+        <div class="card-h"><span class="card-h-left">注意事項テキスト</span></div>
+        <div class="tab-row">
+          <button class="tab-btn on" onclick="swCautionTab('tpl',this)">テンプレート</button>
+          <button class="tab-btn" onclick="swCautionTab('custom',this)">カスタム入力</button>
+        </div>
+        <div class="tab-panel on" id="ctpl">
+          <div class="caution-tpl-txt" id="caution-tpl-view"></div>
+          <p style="font-size:10px;color:var(--muted);margin-top:10px">テンプレートを使用します。（主催者名）（期間）（連絡先）は「基本情報」「時間・期間設定」から自動反映されます。</p>
+          <div class="btns" style="margin-top:12px"><button class="btn btn-p" onclick="saveCautionTpl()">このテンプレートで保存</button></div>
+        </div>
+        <div class="tab-panel" id="ccustom">
+          <textarea class="ta" id="caution-ta" rows="18" style="font-size:12px;line-height:1.9"></textarea>
+          <div class="btns" style="margin-top:12px">
+            <button class="btn btn-p" onclick="saveCautionCustom()">保存して反映</button>
+            <button class="btn btn-g" onclick="loadCautionTpl()">← テンプレートを読み込む</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ライブ進捗 -->
+    <div class="page" id="p-live">
+      <div class="ph">ライブ進捗</div>
+      <div class="psub2">各チームのリアルタイム状況（4秒ごと更新）</div>
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-l">Active</div><div class="kpi-v blue" id="kpi-active">5</div></div>
+        <div class="kpi"><div class="kpi-l">Clear</div><div class="kpi-v orange" id="kpi-clear">2</div></div>
+        <div class="kpi"><div class="kpi-l">HINT 待ち</div><div class="kpi-v amber" id="kpi-hint">2</div></div>
+        <div class="kpi"><div class="kpi-l">総ヒント使用</div><div class="kpi-v" id="kpi-total">14</div></div>
+      </div>
+
+      <!-- 問題別正解状況 + ヒント使用数 -->
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-h"><span class="card-h-left">📊 問題別の正解 &amp; ヒント使用状況</span></div>
+        <div id="q-solve-stats" style="display:flex;flex-direction:column;gap:14px;padding-top:4px"></div>
+      </div>
+
+      <div class="tgrid" id="teams-grid"></div>
+    </div>
+
+    <!-- 分析 -->
+    <div class="page" id="p-analysis">
+      <div class="ph">結果・分析</div>
+      <div class="psub2">問題ごとの正解率・ヒント使用率</div>
+      <div class="card">
+        <div class="card-h"><span class="card-h-left">問題別パフォーマンス</span></div>
+        <div id="analysis-list" style="padding-top:4px"></div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /admin-main -->
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+/* ═══════════════════════════════════════
+   CONSTANTS
+═══════════════════════════════════════ */
+const CAUTION_TPL = `■ スタンプラリー参加にあたっての注意事項
+
+【参加方法】
+・各スポットに設置されたパネルを見つけてください。
+・問題ページで正解を入力するとスタンプを獲得できます。
+・間違えても何度でも挑戦できます。
+
+【スマートフォンについて】
+・歩きスマホは大変危険です。必ず立ち止まってご使用ください。
+・スタンプデータはこのブラウザに保存されます。同じ端末・ブラウザでご参加ください。
+
+【特典交換】
+・受付スタッフにこの画面をご提示ください。
+・受付場所：（場所）　受付時間：（時間）
+
+【その他】
+・主催：（主催者名）　お問い合わせ：（連絡先）
+・荒天時は中止の場合があります。`;
+
+const EMOJIS = ['🐟','🌸','📡','🏛️','🔑','🐼','🦁','🐘','🎯','🌊','🗺️','⭐','🎪','🌺','🍀','🏆','🌙','🔮','🎭','🦋','🎈','🌈','🏔️','🎸'];
+
+/* ═══ STATE ═══ */
+let projects = [
+  {id:1,name:'久屋大通り公園 謎解きラリー',sub:'スタンプを集めて特典をゲット！',status:'live',qCount:5,teams:24,emoji:'🌳'},
+  {id:2,name:'ラグナシア 謎解きイベント',sub:'夏の大冒険！水族館の謎を解け',status:'draft',qCount:6,teams:0,emoji:'🎡'},
+  {id:3,name:'Zoo なぞとき スタンプラリー',sub:'動物たちからの挑戦状',status:'ended',qCount:5,teams:87,emoji:'🦒'},
+];
+let currentProjId = null;
+let quizData = getLS('nazo_quiz') || defaultQuiz();
+let rewardData = getLS('nazo_rewards') || defaultRewards();
+let tmpQImgs = [];   // {url, name}[]
+let tmpSI = null, tmpSIsImg = false;
+let selEmoji = EMOJIS[0];
+
+const adminTeams = [
+  {name:'シバイヌ探偵団',prog:3,hint:true,hn:2,time:'00:45'},
+  {name:'ファミリーα',prog:5,hint:false,hn:1,time:'01:02',clear:true},
+  {name:'なぞとき軍団',prog:4,hint:true,hn:4,time:'00:58'},
+  {name:'コタロウ団',prog:2,hint:false,hn:0,time:'00:22'},
+  {name:'もこたズ',prog:5,hint:false,hn:3,time:'01:11',clear:true},
+  {name:'パズル三銃士',prog:3,hint:false,hn:2,time:'00:41'},
+];
+
+function getLS(k){ try{return JSON.parse(localStorage.getItem(k)||'null')}catch{return null} }
+function setLS(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
+
+/* ═══ GAS連携 ═══ */
+var GAS_URL='https://script.google.com/macros/s/AKfycbzJ9f9c9g9iKWmYq1kz3NyCDE-NWatx1rTuKVuE8YYhpwf8jy23Y3sFVKKSAdT6K9koIg/exec';
+function gasPost(action,data){
+  return fetch(GAS_URL,{method:'POST',body:JSON.stringify({action,data})})
+    .then(r=>r.json())
+    .catch(e=>{console.warn('GAS保存エラー',e);return null;});
+}
+function gasGet(){
+  return fetch(GAS_URL+'?action=all')
+    .then(r=>r.json())
+    .catch(e=>{console.warn('GAS読み込みエラー',e);return null;});
+}
+
+function defaultQuiz(){
+  return [
+    {id:1,no:1,title:'公園の謎①',q:'久屋大通り公園にある噴水は何の形をしているでしょう？',ans:'たい',sType:'emoji',sEmoji:'🐟',sImg:null,images:[],hints:[{text:'水の中に住む生き物です',img:null},{text:'よく食べられる魚です',img:null}],status:'published'},
+    {id:2,no:2,title:'花の謎②',q:'春になると公園に咲くこの花の名前は何でしょう？',ans:'さくら',sType:'emoji',sEmoji:'🌸',sImg:null,images:[],hints:[{text:'春の日本の花！',img:null}],status:'published'},
+    {id:3,no:3,title:'建物の謎③',q:'公園の近くにある高いタワーの名前は？（ひらがなで）',ans:'てれびとう',sType:'emoji',sEmoji:'📡',sImg:null,images:[],hints:[{text:'テレビの電波を送る建物',img:null}],status:'published'},
+    {id:4,no:4,title:'歴史の謎④',q:'この公園の「久屋」という読み方は？',ans:'ひさや',sType:'emoji',sEmoji:'🏛️',sImg:null,images:[],hints:[{text:'漢字の読み方を考えよう',img:null}],status:'published'},
+    {id:5,no:5,title:'最終謎⑤',q:'謎①〜④の答えの頭文字をつなげると？',ans:'たさてひ',sType:'emoji',sEmoji:'🔑',sImg:null,images:[],hints:[{text:'4文字の言葉です',img:null}],status:'published'},
+  ];
+}
+function defaultRewards(){
+  return [
+    {id:1,name:'オリジナルステッカー',ico:'🎴',req:3,desc:'受付スタッフにお声がけください',allClear:false},
+    {id:2,name:'全問クリア！限定グッズ',ico:'🏆',req:5,desc:'全問正解のみ！受付スタッフにお声がけください',allClear:true},
+  ];
+}
+
+/* ═══ INIT ═══ */
+document.addEventListener('DOMContentLoaded',()=>{
+  // GASから最新データを読み込む
+  gasGet().then(data=>{
+    if(data){
+      if(data.quiz&&data.quiz.length)   { quizData=data.quiz;    setLS('nazo_quiz',quizData); }
+      if(data.rewards&&data.rewards.length){ rewardData=data.rewards; setLS('nazo_rewards',rewardData); }
+      if(data.event&&Object.keys(data.event).length){ setLS('nazo_event',data.event); }
+      renderRewardRows();
+      toast('GASからデータを読み込みました');
+    }
+  });
+  renderProjects();
+  initStampPicker();
+  initHints([{text:'',img:null},{text:'',img:null}]);
+  renderRewardRows();
+  // プレビュー自動更新
+  ['f-title','f-q','f-desc','f-hook','f-story','f-next'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.addEventListener('input',updatePreview);
+  });
+  updatePreview();
+  document.getElementById('caution-tpl-view').textContent = CAUTION_TPL;
+  document.getElementById('caution-ta').value = CAUTION_TPL;
+  setInterval(()=>{
+    adminTeams.forEach(t=>{
+      if(!t.clear&&Math.random()<.15){t.prog=Math.min(quizData.length,t.prog+1);if(t.prog>=quizData.length){t.clear=true;t.hint=false;}}
+      t.hint=!t.clear&&Math.random()<.2;
+    });
+    const hw=adminTeams.filter(t=>t.hint).length;
+    ['kpi-hint','hint-badge'].forEach(id=>document.getElementById(id).textContent=hw);
+    document.getElementById('kpi-clear').textContent=adminTeams.filter(t=>t.clear).length;
+    document.getElementById('kpi-active').textContent=adminTeams.filter(t=>!t.clear).length;
+    renderTeams();
+  },4000);
+});
+
+/* ═══ PROJECTS ═══ */
+function renderProjects(){
+  const SL={live:'live',draft:'draft',ended:'ended'};
+  const SN={live:'● LIVE',draft:'● DRAFT',ended:'● 終了'};
+  document.getElementById('proj-grid').innerHTML=projects.map(p=>`
+    <div class="pcard" onclick="openProj(${p.id})">
+      <div class="pthumb"><span>${p.emoji}</span><div class="sdot ${SL[p.status]}"></div></div>
+      <div class="pinfo">
+        <div class="pname">${p.name}</div><div class="psub">${p.sub||'（説明なし）'}</div>
+        <div class="pstats">
+          <div><div class="pstat-n">${p.qCount}</div><div class="pstat-l">問題数</div></div>
+          <div><div class="pstat-n">${p.teams}</div><div class="pstat-l">チーム</div></div>
+          <div><div class="pstat-n" style="font-size:11px;margin-top:4px">${SN[p.status]}</div><div class="pstat-l">状態</div></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function openProj(id){
+  currentProjId=id; const p=projects.find(x=>x.id===id);
+  document.getElementById('proj-screen').style.display='none';
+  document.getElementById('admin-main').classList.add('on');
+  document.getElementById('sb-pname').textContent=p.name;
+  document.getElementById('sb-bdg').textContent={live:'● LIVE',draft:'● DRAFT',ended:'● 終了'}[p.status];
+  document.getElementById('sb-bdg').className='sb-bdg '+p.status;
+  document.getElementById('nav-proj-badge').textContent=p.name;
+  document.getElementById('nav-proj-badge').style.display='inline-flex';
+  document.getElementById('ev-name').value=p.name;
+  document.getElementById('ev-sub').value=p.sub||'';
+  toast(`「${p.name}」を開きました`);
+}
+function backToProj(){
+  document.getElementById('proj-screen').style.display='block';
+  document.getElementById('admin-main').classList.remove('on');
+  document.getElementById('nav-proj-badge').style.display='none';
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+  document.getElementById('p-create').classList.add('on');
+  document.querySelectorAll('.sbi').forEach(x=>x.classList.remove('on'));
+  document.querySelector('.sbi').classList.add('on');
+}
+function newProj(){
+  const name=prompt('新しい案件名を入力してください：');
+  if(!name||!name.trim()) return;
+  const p={id:Date.now(),name:name.trim(),sub:'',status:'draft',qCount:0,teams:0,emoji:'✦'};
+  projects.push(p); renderProjects(); toast(`「${name}」を作成しました`); openProj(p.id);
+}
+
+/* ═══ PAGE NAV ═══ */
+function gp(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.sbi').forEach(n=>n.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  if(el) el.classList.add('on');
+  if(id==='list') renderQTable();
+  if(id==='live') renderTeams();
+  if(id==='analysis') renderAnalysis();
+  if(id==='reward') renderRewardRows();
+}
+
+/* ═══ IMAGE ═══ */
+function hImg(inp,zId,pId,key){
+  const file=inp.files[0];if(!file)return;
+  const r=new FileReader();r.onload=e=>{
+    const url=e.target.result;
+    if(key==='si'){tmpSI=url;tmpSIsImg=true;}
+    const pv=document.getElementById(pId);if(pv)pv.src=url;
+    const z=zId?document.getElementById(zId):inp.closest('.iz');
+    if(z)z.classList.add('on');
+  };r.readAsDataURL(file);
+}
+function cImg(e,zId,pId,key){
+  e.stopPropagation();
+  if(key==='si'){tmpSI=null;tmpSIsImg=false;}
+  const pv=document.getElementById(pId);if(pv)pv.src='';
+  const z=zId?document.getElementById(zId):e.target.closest('.iz');
+  if(z){z.classList.remove('on');const inp=z.querySelector('input[type=file]');if(inp)inp.value='';}
+}
+
+// 複数問題画像
+function addQuizImg(inp){
+  const file=inp.files[0];if(!file)return;
+  const r=new FileReader();r.onload=e=>{
+    tmpQImgs.push({url:e.target.result,name:file.name});
+    renderQuizImgsList();
+  };r.readAsDataURL(file);inp.value='';
+}
+function renderQuizImgsList(){
+  document.getElementById('quiz-imgs-list').innerHTML=tmpQImgs.map((img,i)=>`
+    <div class="img-item">
+      <div class="img-item-thumb"><img src="${img.url}" alt=""></div>
+      <div class="img-item-info">${img.name}</div>
+      <button class="img-item-del" onclick="delQuizImg(${i})">削除</button>
+    </div>`).join('');
+}
+function delQuizImg(i){ tmpQImgs.splice(i,1); renderQuizImgsList(); }
+
+function hHero(inp){
+  const file=inp.files[0];if(!file)return;
+  const r=new FileReader();r.onload=e=>{
+    const url=e.target.result;
+    const ev=getEvent();ev.heroImg=url;setLS('nazo_event',ev);gasPost('saveEvent',ev);
+    document.getElementById('hero-z').classList.add('on');
+    document.getElementById('hero-p').src=url;
+    toast('トップ画像を保存しました');
+  };r.readAsDataURL(file);
+}
+function cHero(e){
+  e.stopPropagation();
+  const ev=getEvent();delete ev.heroImg;setLS('nazo_event',ev);gasPost('saveEvent',ev);
+  document.getElementById('hero-z').classList.remove('on');
+  document.getElementById('hero-p').src='';
+  toast('削除しました');
+}
+function hBg(inp){
+  const file=inp.files[0];if(!file)return;
+  const r=new FileReader();r.onload=e=>{
+    const ev=getEvent();ev.bg=e.target.result;setLS('nazo_event',ev);gasPost('saveEvent',ev);
+    document.getElementById('bg-z').classList.add('on');
+    document.getElementById('bg-p').src=e.target.result;
+    toast('背景画像を保存しました');
+  };r.readAsDataURL(file);
+}
+function cBg(e){
+  e.stopPropagation();
+  const ev=getEvent();delete ev.bg;setLS('nazo_event',ev);gasPost('saveEvent',ev);
+  document.getElementById('bg-z').classList.remove('on');
+  document.getElementById('bg-p').src='';
+  toast('削除しました');
+}
+function hLogo(inp){
+  const file=inp.files[0];if(!file)return;
+  const r=new FileReader();r.onload=e=>{
+    const ev=getEvent();ev.logo=e.target.result;setLS('nazo_event',ev);gasPost('saveEvent',ev);
+    document.getElementById('logo-z').classList.add('on');
+    document.getElementById('logo-p').src=e.target.result;
+    toast('ロゴを保存しました');
+  };r.readAsDataURL(file);
+}
+function cLogo(e){
+  e.stopPropagation();
+  const ev=getEvent();delete ev.logo;setLS('nazo_event',ev);
+  document.getElementById('logo-z').classList.remove('on');
+  document.getElementById('logo-p').src='';
+  toast('削除しました');
+}
+function getEvent(){return getLS('nazo_event')||{};}
+
+/* ═══ STAMP ═══ */
+function initStampPicker(){
+  document.getElementById('stamp-picker').innerHTML=EMOJIS.map(e=>
+    `<div class="spo ${e===selEmoji?'on':''}" onclick="selEm('${e}',this)">${e}</div>`
+  ).join('');
+}
+function selEm(e,el){
+  selEmoji=e;tmpSIsImg=false;
+  document.querySelectorAll('.spo').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+}
+function swSTab(t,el){
+  document.querySelectorAll('.stab').forEach(x=>x.classList.remove('on'));el.classList.add('on');
+  document.getElementById('stab-e').classList.toggle('on',t==='e');
+  document.getElementById('stab-i').classList.toggle('on',t==='i');
+  tmpSIsImg=(t==='i');
+}
+
+/* ═══ HINTS ═══ */
+function initHints(hints){
+  const list=document.getElementById('hint-list');
+  list.innerHTML='';
+  (hints||[]).forEach((h,i)=>appendHintRow(h,i));
+}
+function appendHintRow(h,idx){
+  const list=document.getElementById('hint-list');
+  const row=document.createElement('div');row.className='hint-item-row';
+  row.dataset.idx=idx;
+  const txt=typeof h==='string'?h:(h.text||'');
+  const imgUrl=typeof h==='object'?h.img||null:null;
+  row.innerHTML=`
+    <div class="hint-item-top">
+      <div class="hint-n">${idx+1}</div>
+      <div class="hint-inp-wrap"><input class="inp" style="font-size:12px;padding:7px 10px" placeholder="ヒント${idx+1}" value="${txt.replace(/"/g,'&quot;')}"></div>
+      <button class="hdel" onclick="rmHint(this)">×</button>
+    </div>
+    <div class="hint-img-row">
+      <div class="hint-img-thumb ${imgUrl?'show':''}" id="hthumb-${idx}">${imgUrl?`<img src="${imgUrl}" alt="">`:''}  </div>
+      <label class="hint-img-btn">
+        <input type="file" accept="image/*" onchange="addHintImg(this,${idx})">
+        ${imgUrl?'画像を変更':'＋ 画像を添付'}
+      </label>
+      <button class="hint-img-del ${imgUrl?'show':''}" id="hdel-${idx}" onclick="delHintImg(this,${idx})">画像削除</button>
+    </div>`;
+  list.appendChild(row);
+}
+function addHint(){
+  const list=document.getElementById('hint-list');
+  if(list.children.length>=10){toast('ヒントは最大10つです','err');return;}
+  appendHintRow({text:'',img:null},list.children.length);
+  // 番号振り直し
+  document.querySelectorAll('#hint-list .hint-n').forEach((el,i)=>el.textContent=i+1);
+}
+function rmHint(btn){
+  btn.closest('.hint-item-row').remove();
+  document.querySelectorAll('#hint-list .hint-n').forEach((el,i)=>{el.textContent=i+1;el.closest('.hint-item-row').dataset.idx=i;});
+}
+function addHintImg(inp,idx){
+  const file=inp.files[0];if(!file)return;
+  const r=new FileReader();r.onload=e=>{
+    const url=e.target.result;
+    const thumb=document.getElementById('hthumb-'+idx);
+    if(thumb){thumb.innerHTML=`<img src="${url}" alt="">`;thumb.classList.add('show');}
+    const delBtn=document.getElementById('hdel-'+idx);
+    if(delBtn){delBtn.classList.add('show');delBtn.dataset.img=url;}
+    inp.dataset.imgUrl=url;
+  };r.readAsDataURL(file);inp.value='';
+}
+function delHintImg(btn,idx){
+  const thumb=document.getElementById('hthumb-'+idx);
+  if(thumb){thumb.innerHTML='';thumb.classList.remove('show');}
+  btn.classList.remove('show');
+}
+function getHints(){
+  const rows=document.querySelectorAll('#hint-list .hint-item-row');
+  return Array.from(rows).map(row=>{
+    const txt=row.querySelector('input.inp').value.trim();
+    const thumb=row.querySelector('.hint-img-thumb img');
+    return {text:txt,img:thumb?thumb.src:null};
+  }).filter(h=>h.text||h.img);
+}
+
+/* ═══ QUIZ ═══ */
+function saveQ(){
+  const title=document.getElementById('f-title').value.trim();
+  const q=document.getElementById('f-q').value.trim();
+  const ans=document.getElementById('f-ans').value.trim();
+  const no=parseInt(document.getElementById('f-no').value);
+  if(!title||!q||!ans){toast('タイトル・問題文・正解は必須です','err');return;}
+  const nq={
+    id:Date.now(),no,title,q,ans,
+    desc:document.getElementById('f-desc').value.trim(),
+    familyHook:document.getElementById('f-hook').value.trim(),
+    story:document.getElementById('f-story').value.trim(),
+    nextGuide:document.getElementById('f-next').value.trim(),
+    sType:tmpSIsImg?'image':'emoji',sEmoji:selEmoji,sImg:tmpSIsImg?tmpSI:null,
+    images:tmpQImgs.map(i=>({url:i.url})),
+    hints:getHints(),
+    status:document.getElementById('f-status').value,
+  };
+  const idx=quizData.findIndex(x=>x.no===no);
+  if(idx>=0) quizData[idx]=nq; else {quizData.push(nq);quizData.sort((a,b)=>a.no-b.no);}
+  setLS('nazo_quiz',quizData);
+  gasPost('saveQuiz',quizData);
+  toast(`「${title}」を保存しました`); renderQTable();
+}
+function saveDraft(){toast('下書き保存しました');}
+function resetForm(){
+  ['f-title','f-q','f-ans','f-desc','f-hook','f-story','f-next'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-no').value='1';
+  tmpQImgs=[]; renderQuizImgsList();
+  tmpSI=null;tmpSIsImg=false;
+  const sz=document.getElementById('simg-z');if(sz){sz.classList.remove('on');const p=sz.querySelector('img.prev');if(p)p.src='';}
+  initHints([{text:'',img:null},{text:'',img:null}]);
+  toast('フォームをリセットしました');
+}
+function editQ(id){
+  const q=quizData.find(x=>x.id===id);if(!q)return;
+  document.getElementById('f-no').value=q.no;
+  document.getElementById('f-title').value=q.title;
+  document.getElementById('f-q').value=q.q;
+  document.getElementById('f-ans').value=q.ans;
+  document.getElementById('f-desc').value=q.desc||'';
+  document.getElementById('f-hook').value=q.familyHook||'';
+  document.getElementById('f-story').value=q.story||'';
+  document.getElementById('f-next').value=q.nextGuide||'';
+  document.getElementById('f-status').value=q.status;
+  tmpQImgs=(q.images||[]).map(i=>({url:i.url,name:'(登録済み)'}));
+  renderQuizImgsList();
+  if(q.sType==='image'&&q.sImg){tmpSI=q.sImg;tmpSIsImg=true;}
+  else{selEmoji=q.sEmoji||'⭐';tmpSIsImg=false;initStampPicker();}
+  initHints(q.hints||[]);
+  gp('create',document.querySelector('.sbi'));
+  toast(`「${q.title}」を読み込みました`);
+}
+function delQ(id){
+  quizData=quizData.filter(x=>x.id!==id);setLS('nazo_quiz',quizData);gasPost('saveQuiz',quizData);renderQTable();toast('削除しました','err');
+}
+function renderQTable(){
+  const tb=document.getElementById('q-tbody');if(!tb)return;
+  const SC={published:'var(--green)',draft:'var(--amber)',hidden:'var(--muted)'};
+  const SN={published:'公開',draft:'下書き',hidden:'非公開'};
+  tb.innerHTML=quizData.map(q=>{
+    const st=(q.sType==='image'&&q.sImg)?`<div class="sthumb"><img src="${q.sImg}"></div>`:`<div class="sthumb">${q.sEmoji||'⭐'}</div>`;
+    const imgs=(q.images||[]).filter(i=>i&&i.url);
+    const im=imgs.length?`<div style="display:flex;gap:3px">${imgs.slice(0,3).map(i=>`<div style="width:32px;height:22px;border-radius:4px;overflow:hidden"><img src="${i.url}" style="width:100%;height:100%;object-fit:cover"></div>`).join('')}</div>`:`<span style="font-size:10px;color:var(--muted)">なし</span>`;
+    return `<tr>
+      <td><span class="nbadge">${q.no}</span></td>
+      <td style="font-weight:600;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${q.title}</td>
+      <td><span class="apill">${q.ans}</span></td>
+      <td>${im}</td><td>${st}</td>
+      <td><span style="font-size:10px;color:${SC[q.status]}">${SN[q.status]}</span></td>
+      <td><div class="tbl-acts">
+        <button class="ico-btn" onclick="editQ(${q.id})">✏</button>
+        <button class="ico-btn del" onclick="delQ(${q.id})">✕</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ═══ EVENT ═══ */
+function saveEvent(){
+  const ev=getEvent();
+  ev.name=document.getElementById('ev-name').value;
+  ev.sub=document.getElementById('ev-sub').value;
+  ev.spotLabel=document.getElementById('ev-spot-label').value;
+  setLS('nazo_event',ev); gasPost('saveEvent',ev); toast('基本情報を保存・反映しました');
+}
+
+/* ═══ TIME ═══ */
+function saveTime(){
+  const ev=getEvent();
+  ev.pubStart=document.getElementById('t-pub-start').value;
+  ev.pubEnd=document.getElementById('t-pub-end').value;
+  ev.stampStart=document.getElementById('t-stamp-start').value;
+  ev.stampEnd=document.getElementById('t-stamp-end').value;
+  ev.rewardStart=document.getElementById('t-reward-start').value;
+  ev.rewardEnd=document.getElementById('t-reward-end').value;
+  ev.rewardPlace=document.getElementById('t-reward-place').value;
+  setLS('nazo_event',ev); gasPost('saveEvent',ev); toast('時間・期間設定を保存しました');
+}
+
+/* ═══ REWARDS ═══ */
+function renderRewardRows(){
+  document.getElementById('reward-rows').innerHTML=rewardData.map((r,i)=>`
+    <div class="reward-row" id="rrow-${r.id}">
+      <div class="reward-row-top">
+        <div class="reward-row-n">特典${i+1}</div>
+        <button class="reward-row-del" onclick="delReward(${r.id})">✕</button>
+      </div>
+      <div class="row2" style="gap:10px;margin-bottom:8px">
+        <div><label class="lbl">必要スタンプ数</label><input class="inp" type="number" min="1" max="99" value="${r.req}" id="r-req-${r.id}"></div>
+        <div><label class="lbl">特典名</label><input class="inp" value="${r.name}" id="r-name-${r.id}" placeholder="例：オリジナルステッカー"></div>
+      </div>
+      <div style="margin-bottom:8px"><label class="lbl">説明・備考</label><input class="inp" value="${r.desc||''}" id="r-desc-${r.id}" placeholder="受付スタッフにお声がけください"></div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--muted2)">
+          <input type="checkbox" id="r-all-${r.id}" ${r.allClear?'checked':''} style="accent-color:var(--orange)">
+          全問正解ポップアップに使用する（最も大きな特典）
+        </label>
+      </div>
+    </div>`).join('');
+}
+function addReward(){
+  const newR={id:Date.now(),name:'',ico:'🎁',req:1,desc:'',allClear:false};
+  rewardData.push(newR); renderRewardRows();
+}
+function delReward(id){
+  if(rewardData.length<=1){toast('特典は最低1つ必要です','err');return;}
+  rewardData=rewardData.filter(r=>r.id!==id); renderRewardRows();
+}
+function saveRewards(){
+  rewardData=rewardData.map(r=>({
+    ...r,
+    name:document.getElementById('r-name-'+r.id)?.value||r.name,
+    req:parseInt(document.getElementById('r-req-'+r.id)?.value)||r.req,
+    desc:document.getElementById('r-desc-'+r.id)?.value||'',
+    allClear:document.getElementById('r-all-'+r.id)?.checked||false,
+  }));
+  setLS('nazo_rewards',rewardData); gasPost('saveRewards',rewardData); toast('特典設定を保存・反映しました');
+}
+
+/* ═══ CAUTION ═══ */
+function swCautionTab(t,el){
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('on'));el.classList.add('on');
+  document.getElementById('ctpl').classList.toggle('on',t==='tpl');
+  document.getElementById('ccustom').classList.toggle('on',t==='custom');
+  const ev=getEvent();ev.cautionMode=t;setLS('nazo_event',ev);
+}
+function saveCautionTpl(){
+  const ev=getEvent();ev.cautionMode='tpl';ev.customCaution=null;setLS('nazo_event',ev);gasPost('saveEvent',ev);
+  toast('テンプレートで保存しました');
+}
+function saveCautionCustom(){
+  const ev=getEvent();ev.cautionMode='custom';ev.customCaution=document.getElementById('caution-ta').value;setLS('nazo_event',ev);gasPost('saveEvent',ev);
+  toast('カスタム注意事項を保存・反映しました');
+}
+function loadCautionTpl(){document.getElementById('caution-ta').value=CAUTION_TPL;toast('テンプレートを読み込みました');}
+
+/* ═══ LIVE ═══ */
+function renderTeams(){
+  const c=document.getElementById('teams-grid');if(!c)return;
+  c.innerHTML=adminTeams.map(t=>{
+    const bc=t.clear?'clear':t.hint?'hint':'active';
+    const bl=t.clear?'CLEAR':t.hint?'HINT待ち':'プレイ中';
+    const steps=quizData.map((_,i)=>`<div class="tstep ${i<t.prog?'d':''} ${i===t.prog&&!t.clear?'c':''}"></div>`).join('');
+    return `<div class="tcard ${t.hint?'hw':''}">
+      <div class="tt"><div class="tname">${t.name}</div><div class="tbdg ${bc}">${bl}</div></div>
+      <div class="tsteps">${steps}</div>
+      <div class="tmeta"><span>⏱ <strong>${t.time}</strong></span><span>💡 <strong>${t.hn}回</strong></span><span>📍 <strong>${t.clear?'CLEAR':t.prog+'/'+quizData.length}</strong></span></div>
+    </div>`;
+  }).join('');
+  renderQSolveStats();
+}
+
+/* 問題別の正解状況＋ヒント使用数（ライブ進捗ページ内） */
+function renderQSolveStats(){
+  const el=document.getElementById('q-solve-stats');if(!el)return;
+  const total=adminTeams.length||1;
+  // ヒント段階別使用数シミュレーション（問題ごと・段階ごと）
+  // [Q1:[h1使用数, h2使用数, ...], Q2:[...], ...]
+  const hintByLevel=[
+    [8,5,2],   // Q1: ヒント1=8人, ヒント2=5人, ヒント3=2人
+    [5,3],     // Q2
+    [12,9,6,2],// Q3: 最難関
+    [3,1],     // Q4
+    [6,4,2],   // Q5
+  ];
+  el.innerHTML=quizData.map((q,i)=>{
+    const solved=adminTeams.filter(t=>t.prog>=q.no||t.clear).length;
+    const pct=Math.round(solved/total*100);
+    const col=pct>=70?'var(--green)':pct>=40?'var(--amber)':'var(--red)';
+    const levels=hintByLevel[i]||[0];
+    const totalHint=levels.reduce((a,b)=>a+b,0);
+    const maxLevel=Math.max(...levels,1);
+    const th=(q.sType==='image'&&q.sImg)
+      ?`<div style="width:26px;height:26px;border-radius:6px;overflow:hidden;flex-shrink:0"><img src="${q.sImg}" style="width:100%;height:100%;object-fit:cover"></div>`
+      :`<span style="font-size:18px;flex-shrink:0;width:26px;text-align:center">${q.sEmoji||'⭐'}</span>`;
+
+    // ヒント段階別バー
+    const hintLevelHtml=levels.map((n,li)=>{
+      const lpct=Math.round(n/Math.max(total,1)*100);
+      const lw=Math.round(n/maxLevel*100);
+      const lc=li===0?'#fbbf24':li===1?'#fb923c':'#f87171';
+      return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+        <div style="width:44px;font-size:9px;color:var(--muted);flex-shrink:0">ヒント${li+1}</div>
+        <div style="flex:1;height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:${lw}%;background:${lc};border-radius:3px;transition:width .6s"></div>
+        </div>
+        <div style="width:52px;text-align:right;font-size:9px;color:${lc};font-family:'DM Mono',monospace;flex-shrink:0">${n}人(${lpct}%)</div>
+      </div>`;
+    }).join('');
+
+    return `<div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--r-lg);padding:12px 14px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        ${th}
+        <span style="font-size:12px;font-weight:700;color:var(--text);flex:1">Q${q.no}. ${q.title}</span>
+        <span style="font-size:10px;color:var(--muted)">💡 合計 ${totalHint}回</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <div style="font-size:9px;color:var(--muted);margin-bottom:5px;letter-spacing:.08em;text-transform:uppercase">✅ 正解率</div>
+          <div style="height:7px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;margin-bottom:3px">
+            <div style="height:100%;width:${pct}%;background:${col};border-radius:4px;transition:width .6s"></div>
+          </div>
+          <div style="font-size:10px;color:${col};font-weight:700">${solved}/${total}チーム（${pct}%）</div>
+        </div>
+        <div>
+          <div style="font-size:9px;color:var(--muted);margin-bottom:5px;letter-spacing:.08em;text-transform:uppercase">💡 ヒント使用（段階別）</div>
+          ${hintLevelHtml}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderAnalysis(){
+  const c=document.getElementById('analysis-list');if(!c)return;
+  c.innerHTML=quizData.map(q=>{
+    const pct=Math.round(Math.random()*60+30);
+    const hn=Math.floor(Math.random()*8+1);
+    const col=pct>70?'var(--green)':pct>45?'var(--amber)':'var(--red)';
+    const th=(q.sType==='image'&&q.sImg)?`<div style="width:24px;height:24px;border-radius:5px;overflow:hidden;flex-shrink:0"><img src="${q.sImg}" style="width:100%;height:100%;object-fit:cover"></div>`:`<span style="font-size:17px;flex-shrink:0;width:24px;text-align:center">${q.sEmoji}</span>`;
+    return `<div class="aitem">${th}
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">
+          <span style="font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${q.title}</span>
+          <span style="color:var(--muted);flex-shrink:0;margin-left:8px">正解率 ${pct}%　💡${hn}回</span>
+        </div>
+        <div class="abar-bg"><div class="abar" style="width:${pct}%;background:${col}"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ═══ LIVE PREVIEW ═══ */
+function updatePreview(){
+  const title=document.getElementById('f-title').value||'タイトルがここに表示';
+  const q=document.getElementById('f-q').value||'（問題文がここに表示されます）';
+  const desc=document.getElementById('f-desc').value||'';
+  const hook=document.getElementById('f-hook').value||'';
+  const story=document.getElementById('f-story').value||'';
+  const next=document.getElementById('f-next').value||'（正解後に次の謎への誘導文が表示されます）';
+  const hn=document.querySelectorAll('#hint-list .hint-item-row').length;
+
+  document.getElementById('pv-name').textContent=title;
+  document.getElementById('pv-q-text').textContent=q.replace(/\n/g,' ');
+  document.getElementById('pv-desc-txt').textContent=desc;
+  document.getElementById('pv-hook').textContent=hook;
+  document.getElementById('pv-story').textContent=story?'📖 '+story:'';
+  document.getElementById('pv-next').textContent=next?'🗺 '+next:'';
+  document.getElementById('pv-hint-badge').textContent='💡 ヒント '+hn+'段階';
+
+  // スタンプ絵文字
+  document.getElementById('pv-emoji').textContent=tmpSIsImg?'🖼':selEmoji;
+
+  // 問題画像プレビュー
+  const pvThumb=document.getElementById('pv-thumb');
+  if(tmpQImgs.length>0){
+    pvThumb.innerHTML=`<img src="${tmpQImgs[0].url}" style="width:100%;height:100%;object-fit:cover">`;
+  } else {
+    pvThumb.innerHTML=`<span id="pv-emoji">${tmpSIsImg?'🖼':selEmoji}</span>`;
+  }
+}
+
+/* ═══ TOAST ═══ */
+function toast(msg,type='ok'){
+  const c=document.getElementById('toasts');
+  const t=document.createElement('div');t.className='toast'+(type==='err'?' err':'');
+  t.textContent=msg;c.appendChild(t);setTimeout(()=>t.remove(),2600);
+}
+</script>
+</body>
+</html>
