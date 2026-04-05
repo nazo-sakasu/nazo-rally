@@ -364,14 +364,15 @@ body{font-family:'Noto Sans JP',sans-serif;background:#0f1117;color:#e2e8f0;min-
             </div>
           </div>
 
-          <!-- 問題画像（複数） -->
+          <!-- 問題画像（Google Drive URL） -->
           <div class="card">
-            <div class="card-h"><span class="card-h-left">問題画像 <span style="font-size:10px;font-weight:400;color:var(--muted)">複数追加可</span></span></div>
+            <div class="card-h"><span class="card-h-left">問題画像 <span style="font-size:10px;font-weight:400;color:var(--muted)">Google Drive URL・複数追加可</span></span></div>
+            <p style="font-size:10px;color:var(--muted2);margin-bottom:8px">Google Driveで「リンクを知っている全員」に共有してURLを貼り付けてください</p>
             <div class="multi-imgs" id="quiz-imgs-list"></div>
-            <label class="add-img-btn" style="margin-top:8px">
-              <input type="file" accept="image/*" onchange="addQuizImg(this)">
-              <span>＋ 画像を追加</span>
-            </label>
+            <div style="display:flex;gap:6px;margin-top:8px">
+              <input class="inp" id="quiz-img-url-inp" placeholder="Google Drive の共有URL を貼り付け" style="font-size:12px;padding:7px 10px">
+              <button class="btn btn-g" style="white-space:nowrap;padding:7px 14px" onclick="addQuizImgUrl()">追加</button>
+            </div>
           </div>
 
           <!-- ヒント（最大10・画像付き） -->
@@ -396,11 +397,14 @@ body{font-family:'Noto Sans JP',sans-serif;background:#0f1117;color:#e2e8f0;min-
             </div>
             <div class="sea on" id="stab-e"><div class="spg" id="stamp-picker"></div></div>
             <div class="sia" id="stab-i">
-              <div class="iz" id="simg-z" style="min-height:85px">
-                <input type="file" accept="image/*" onchange="hImg(this,'simg-z','simg-p','si')">
-                <div class="iz-ico">🎨</div><div class="iz-txt">スタンプ画像（正方形推奨）</div>
-                <img class="prev" id="simg-p">
-                <button class="iz-clr" onclick="cImg(event,'simg-z','simg-p','si')">✕</button>
+              <p style="font-size:10px;color:var(--muted2);margin-bottom:8px">Google Driveで「リンクを知っている全員」に共有してURLを貼り付けてください</p>
+              <div style="display:flex;gap:6px">
+                <input class="inp" id="simg-url-inp" placeholder="Google Drive の共有URL を貼り付け" style="font-size:12px;padding:7px 10px">
+                <button class="btn btn-g" style="white-space:nowrap;padding:7px 14px" onclick="setSImgUrl()">設定</button>
+              </div>
+              <div id="simg-preview" style="margin-top:8px;display:none">
+                <img id="simg-p" style="width:60px;height:60px;object-fit:cover;border-radius:8px;border:1px solid var(--border)">
+                <button class="btn btn-g" style="padding:4px 10px;font-size:10px;margin-left:8px" onclick="clearSImgUrl()">削除</button>
               </div>
             </div>
           </div>
@@ -494,36 +498,28 @@ body{font-family:'Noto Sans JP',sans-serif;background:#0f1117;color:#e2e8f0;min-
     <!-- 画像設定 -->
     <div class="page" id="p-media">
       <div class="ph">画像設定</div>
-      <div class="psub2">全体のトップ画像・背景画像・ロゴを設定します</div>
+      <div class="psub2">Google Driveの共有URLを貼り付けてください。各画像は「リンクを知っている全員」に共有設定してください。</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
         <div class="card">
           <div class="card-h"><span class="card-h-left">全体トップ画像</span></div>
-          <p style="font-size:10px;color:var(--muted2);margin-bottom:10px">参加者ページのヘッダー下部に表示される大きなメイン画像</p>
-          <div class="iz" id="hero-z">
-            <input type="file" accept="image/*" onchange="hHero(this)">
-            <div class="iz-ico">🖼</div><div class="iz-txt">トップ画像をアップロード</div><div class="iz-sub">横長推奨 (16:9)</div>
-            <img class="prev" id="hero-p">
-            <button class="iz-clr" onclick="cHero(event)">✕ 削除</button>
+          <p style="font-size:10px;color:var(--muted2);margin-bottom:10px">参加者ページのヘッダー下部に表示される大きなメイン画像（横長推奨）</p>
+          <div style="display:flex;gap:6px;margin-bottom:8px">
+            <input class="inp" id="hero-url-inp" placeholder="Google Drive の共有URL" style="font-size:12px">
+            <button class="btn btn-p" style="white-space:nowrap;padding:8px 14px" onclick="saveHeroUrl()">保存</button>
           </div>
-        </div>
-        <div class="card">
-          <div class="card-h"><span class="card-h-left">全体背景画像</span></div>
-          <p style="font-size:10px;color:var(--muted2);margin-bottom:10px">ページ全体の背景として表示される画像（※参加者ページはライト背景のため基本不要）</p>
-          <div class="iz" id="bg-z">
-            <input type="file" accept="image/*" onchange="hBg(this)">
-            <div class="iz-ico">🌅</div><div class="iz-txt">背景画像をアップロード</div><div class="iz-sub">横長推奨</div>
-            <img class="prev" id="bg-p">
-            <button class="iz-clr" onclick="cBg(event)">✕ 削除</button>
+          <div id="hero-preview" style="display:none;border-radius:10px;overflow:hidden;max-height:120px">
+            <img id="hero-p" style="width:100%;max-height:120px;object-fit:cover;display:block">
           </div>
         </div>
         <div class="card">
           <div class="card-h"><span class="card-h-left">ヘッダーロゴ</span></div>
-          <p style="font-size:10px;color:var(--muted2);margin-bottom:10px">ヘッダー左のアイコン。正方形PNG推奨。</p>
-          <div class="iz" id="logo-z" style="min-height:90px">
-            <input type="file" accept="image/*" onchange="hLogo(this)">
-            <div class="iz-ico">◈</div><div class="iz-txt">ロゴをアップロード</div>
-            <img class="prev" id="logo-p">
-            <button class="iz-clr" onclick="cLogo(event)">✕</button>
+          <p style="font-size:10px;color:var(--muted2);margin-bottom:10px">ヘッダー左のアイコン。正方形推奨。</p>
+          <div style="display:flex;gap:6px;margin-bottom:8px">
+            <input class="inp" id="logo-url-inp" placeholder="Google Drive の共有URL" style="font-size:12px">
+            <button class="btn btn-p" style="white-space:nowrap;padding:8px 14px" onclick="saveLogoUrl()">保存</button>
+          </div>
+          <div id="logo-preview" style="display:none">
+            <img id="logo-p" style="width:60px;height:60px;object-fit:cover;border-radius:10px;border:1px solid var(--border)">
           </div>
         </div>
       </div>
@@ -846,54 +842,21 @@ function renderQuizImgsList(){
 }
 function delQuizImg(i){ tmpQImgs.splice(i,1); renderQuizImgsList(); }
 
-function hHero(inp){
-  const file=inp.files[0];if(!file)return;
-  const r=new FileReader();r.onload=e=>{
-    const url=e.target.result;
-    const ev=getEvent();ev.heroImg=url;setLS('nazo_event',ev);gasPost('saveEvent',ev);
-    document.getElementById('hero-z').classList.add('on');
-    document.getElementById('hero-p').src=url;
-    toast('トップ画像を保存しました');
-  };r.readAsDataURL(file);
+function saveHeroUrl(){
+  const url=convertDriveUrl(document.getElementById("hero-url-inp").value.trim());
+  if(!url){toast("正しいURLを入力してください","err");return;}
+  const ev=getEvent();ev.heroImg=url;setLS("nazo_event",ev);gasPost("saveEvent",ev);
+  document.getElementById("hero-p").src=url;
+  document.getElementById("hero-preview").style.display="block";
+  toast("トップ画像を保存しました");
 }
-function cHero(e){
-  e.stopPropagation();
-  const ev=getEvent();delete ev.heroImg;setLS('nazo_event',ev);gasPost('saveEvent',ev);
-  document.getElementById('hero-z').classList.remove('on');
-  document.getElementById('hero-p').src='';
-  toast('削除しました');
-}
-function hBg(inp){
-  const file=inp.files[0];if(!file)return;
-  const r=new FileReader();r.onload=e=>{
-    const ev=getEvent();ev.bg=e.target.result;setLS('nazo_event',ev);gasPost('saveEvent',ev);
-    document.getElementById('bg-z').classList.add('on');
-    document.getElementById('bg-p').src=e.target.result;
-    toast('背景画像を保存しました');
-  };r.readAsDataURL(file);
-}
-function cBg(e){
-  e.stopPropagation();
-  const ev=getEvent();delete ev.bg;setLS('nazo_event',ev);gasPost('saveEvent',ev);
-  document.getElementById('bg-z').classList.remove('on');
-  document.getElementById('bg-p').src='';
-  toast('削除しました');
-}
-function hLogo(inp){
-  const file=inp.files[0];if(!file)return;
-  const r=new FileReader();r.onload=e=>{
-    const ev=getEvent();ev.logo=e.target.result;setLS('nazo_event',ev);gasPost('saveEvent',ev);
-    document.getElementById('logo-z').classList.add('on');
-    document.getElementById('logo-p').src=e.target.result;
-    toast('ロゴを保存しました');
-  };r.readAsDataURL(file);
-}
-function cLogo(e){
-  e.stopPropagation();
-  const ev=getEvent();delete ev.logo;setLS('nazo_event',ev);
-  document.getElementById('logo-z').classList.remove('on');
-  document.getElementById('logo-p').src='';
-  toast('削除しました');
+function saveLogoUrl(){
+  const url=convertDriveUrl(document.getElementById("logo-url-inp").value.trim());
+  if(!url){toast("正しいURLを入力してください","err");return;}
+  const ev=getEvent();ev.logo=url;setLS("nazo_event",ev);gasPost("saveEvent",ev);
+  document.getElementById("logo-p").src=url;
+  document.getElementById("logo-preview").style.display="block";
+  toast("ロゴを保存しました");
 }
 function getEvent(){return getLS('nazo_event')||{};}
 
@@ -933,13 +896,10 @@ function appendHintRow(h,idx){
       <div class="hint-inp-wrap"><input class="inp" style="font-size:12px;padding:7px 10px" placeholder="ヒント${idx+1}" value="${txt.replace(/"/g,'&quot;')}"></div>
       <button class="hdel" onclick="rmHint(this)">×</button>
     </div>
-    <div class="hint-img-row">
-      <div class="hint-img-thumb ${imgUrl?'show':''}" id="hthumb-${idx}">${imgUrl?`<img src="${imgUrl}" alt="">`:''}  </div>
-      <label class="hint-img-btn">
-        <input type="file" accept="image/*" onchange="addHintImg(this,${idx})">
-        ${imgUrl?'画像を変更':'＋ 画像を添付'}
-      </label>
-      <button class="hint-img-del ${imgUrl?'show':''}" id="hdel-${idx}" onclick="delHintImg(this,${idx})">画像削除</button>
+    <div class="hint-img-row" style="margin-top:6px">
+      ${imgUrl?`<div class="hint-img-thumb show" id="hthumb-${idx}"><img src="${imgUrl}" alt=""></div>`:`<div class="hint-img-thumb" id="hthumb-${idx}"></div>`}
+      <input class="inp" id="hurl-${idx}" style="font-size:11px;padding:5px 9px;flex:1" placeholder="画像URL（Google Drive）" value="${imgUrl||''}" oninput="previewHintUrl(${idx})">
+      <button class="hint-img-del ${imgUrl?'show':''}" id="hdel-${idx}" onclick="delHintImg(this,${idx})">削除</button>
     </div>`;
   list.appendChild(row);
 }
@@ -947,36 +907,82 @@ function addHint(){
   const list=document.getElementById('hint-list');
   if(list.children.length>=10){toast('ヒントは最大10つです','err');return;}
   appendHintRow({text:'',img:null},list.children.length);
-  // 番号振り直し
   document.querySelectorAll('#hint-list .hint-n').forEach((el,i)=>el.textContent=i+1);
 }
 function rmHint(btn){
   btn.closest('.hint-item-row').remove();
   document.querySelectorAll('#hint-list .hint-n').forEach((el,i)=>{el.textContent=i+1;el.closest('.hint-item-row').dataset.idx=i;});
 }
-function addHintImg(inp,idx){
-  const file=inp.files[0];if(!file)return;
-  const r=new FileReader();r.onload=e=>{
-    const url=e.target.result;
-    const thumb=document.getElementById('hthumb-'+idx);
-    if(thumb){thumb.innerHTML=`<img src="${url}" alt="">`;thumb.classList.add('show');}
-    const delBtn=document.getElementById('hdel-'+idx);
-    if(delBtn){delBtn.classList.add('show');delBtn.dataset.img=url;}
-    inp.dataset.imgUrl=url;
-  };r.readAsDataURL(file);inp.value='';
+function previewHintUrl(idx){
+  const url=convertDriveUrl(document.getElementById('hurl-'+idx).value.trim());
+  const thumb=document.getElementById('hthumb-'+idx);
+  const delBtn=document.getElementById('hdel-'+idx);
+  if(url){
+    thumb.innerHTML=`<img src="${url}" alt="">`;thumb.classList.add('show');
+    if(delBtn)delBtn.classList.add('show');
+  }else{
+    thumb.innerHTML='';thumb.classList.remove('show');
+    if(delBtn)delBtn.classList.remove('show');
+  }
 }
 function delHintImg(btn,idx){
+  const inp=document.getElementById('hurl-'+idx);
+  if(inp)inp.value='';
   const thumb=document.getElementById('hthumb-'+idx);
   if(thumb){thumb.innerHTML='';thumb.classList.remove('show');}
   btn.classList.remove('show');
 }
 function getHints(){
   const rows=document.querySelectorAll('#hint-list .hint-item-row');
-  return Array.from(rows).map(row=>{
+  return Array.from(rows).map((row,i)=>{
     const txt=row.querySelector('input.inp').value.trim();
-    const thumb=row.querySelector('.hint-img-thumb img');
-    return {text:txt,img:thumb?thumb.src:null};
+    const urlInp=document.getElementById('hurl-'+i);
+    const img=urlInp?convertDriveUrl(urlInp.value.trim()):null;
+    return {text:txt,img:img||null};
   }).filter(h=>h.text||h.img);
+}
+
+/* Google Drive 共有URLを直接表示できるURLに変換 */
+function convertDriveUrl(url){
+  if(!url) return null;
+  // https://drive.google.com/file/d/FILE_ID/view 形式
+  const m1=url.match(/\/file\/d\/([^/]+)/);
+  if(m1) return 'https://drive.google.com/uc?export=view&id='+m1[1];
+  // https://drive.google.com/open?id=FILE_ID 形式
+  const m2=url.match(/[?&]id=([^&]+)/);
+  if(m2) return 'https://drive.google.com/uc?export=view&id='+m2[1];
+  // すでに直接URLならそのまま
+  if(url.startsWith('http')) return url;
+  return null;
+}
+
+/* 問題画像 URL追加 */
+function addQuizImgUrl(){
+  const inp=document.getElementById('quiz-img-url-inp');
+  const raw=inp.value.trim();
+  if(!raw){toast('URLを入力してください','err');return;}
+  const url=convertDriveUrl(raw);
+  if(!url){toast('正しいURLを入力してください','err');return;}
+  tmpQImgs.push({url:url,name:raw.slice(0,40)});
+  renderQuizImgsList();
+  inp.value='';
+}
+
+/* スタンプ画像 URL設定 */
+function setSImgUrl(){
+  const inp=document.getElementById('simg-url-inp');
+  const url=convertDriveUrl(inp.value.trim());
+  if(!url){toast('正しいURLを入力してください','err');return;}
+  tmpSI=url; tmpSIsImg=true;
+  const prev=document.getElementById('simg-p');
+  if(prev){prev.src=url;}
+  document.getElementById('simg-preview').style.display='block';
+  toast('スタンプ画像を設定しました');
+}
+function clearSImgUrl(){
+  tmpSI=null; tmpSIsImg=false;
+  document.getElementById('simg-url-inp').value='';
+  document.getElementById('simg-preview').style.display='none';
 }
 
 /* ═══ QUIZ ═══ */

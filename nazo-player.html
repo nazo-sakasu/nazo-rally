@@ -6,375 +6,227 @@
 <title>なぞときスタンプラリー</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Nunito:wght@900&display=swap" rel="stylesheet">
 <style>
-
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-
 html{-webkit-font-smoothing:antialiased;}
-
-body{font-family:'Noto Sans JP',sans-serif;background:#faf7f3;color:#1a1209;overflow-x:hidden;min-height:100vh;}
-
+body{font-family:'Noto Sans JP',sans-serif;background:#f5f0e8;color:#2d1a00;overflow-x:hidden;min-height:100vh;padding-bottom:70px;}
 :root{
   --or:#f97316; --ordk:#c2410c; --orlt:#fff7ed; --orbd:#fed7aa;
   --yw:#f59e0b; --ywlt:#fef9c3;
   --gn:#16a34a; --gnlt:#dcfce7;
   --pu:#7c3aed; --pult:#f5f3ff;
-  --ink:#1a1209; --muted:#a16207;
-  --card:#fff; --bd:#e9d5b4; --bd2:#f3e6d0;
+  --ink:#2d1a00; --muted:#92400e;
+  --card:#fff; --bd:#e8d5b0; --bd2:#f5e8d0;
+  --bg:#f5f0e8;
 }
 
-
-/* ─ ヘッダー ─ */
+/* ── ヘッダー ── */
 .hdr{background:linear-gradient(135deg,#ea580c,#f97316 45%,#f59e0b);position:relative;overflow:hidden;}
-
 .hdr::before{content:'';position:absolute;inset:0;
-  background:radial-gradient(circle at 80% 20%,rgba(255,255,255,.12),transparent 50%),
-             radial-gradient(circle at 20% 80%,rgba(255,255,255,.08),transparent 50%);}
-
-.hero-img{width:100%;max-height:220px;object-fit:cover;display:none;}
-
-.hdr-inner{max-width:520px;margin:0 auto;padding:18px 18px 15px;display:flex;align-items:center;gap:14px;position:relative;z-index:1;}
-
-.hdr-logo{width:54px;height:54px;border-radius:16px;flex-shrink:0;background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:24px;}
-
+  background:radial-gradient(circle at 80% 20%,rgba(255,255,255,.15),transparent 50%),
+             radial-gradient(circle at 20% 80%,rgba(255,255,255,.1),transparent 50%);}
+.hero-img{width:100%;max-height:200px;object-fit:cover;display:none;}
+.hdr-inner{max-width:540px;margin:0 auto;padding:16px 16px 14px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.hdr-logo{width:50px;height:50px;border-radius:14px;flex-shrink:0;background:rgba(255,255,255,.28);border:2px solid rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:22px;}
 .hdr-logo img{width:100%;height:100%;object-fit:cover;}
+.hdr-title{font-size:18px;font-weight:900;color:#fff;line-height:1.25;text-shadow:0 1px 6px rgba(0,0,0,.18);}
+.hdr-sub{font-size:11px;color:rgba(255,255,255,.88);margin-top:2px;}
 
-.hdr-title{font-size:19px;font-weight:900;color:#fff;line-height:1.25;text-shadow:0 1px 6px rgba(0,0,0,.18);}
-
-.hdr-sub{font-size:11px;color:rgba(255,255,255,.85);margin-top:3px;}
-
-
-/* ─ ニックネームバー ─ */
-.nbar{background:var(--card);border-bottom:2px solid var(--bd);padding:10px 16px;}
-
-.nbar-inner{max-width:520px;margin:0 auto;}
-
+/* ── ニックネームバー ── */
+.nbar{background:var(--card);border-bottom:2px solid var(--bd);padding:9px 14px;}
+.nbar-inner{max-width:540px;margin:0 auto;}
 .nform{display:flex;gap:8px;}
-
-.nform input{flex:1;border:2px solid var(--bd);border-radius:99px;padding:9px 16px;font-size:14px;outline:none;font-family:'Noto Sans JP',sans-serif;background:var(--orlt);transition:border-color .2s;}
-
+.nform input{flex:1;border:2px solid var(--bd);border-radius:99px;padding:8px 15px;font-size:14px;outline:none;font-family:'Noto Sans JP',sans-serif;background:var(--orlt);}
 .nform input:focus{border-color:var(--or);}
-
-.nform button{background:var(--or);color:#fff;border:none;border-radius:99px;padding:9px 22px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:background .15s;}
-
+.nform button{background:var(--or);color:#fff;border:none;border-radius:99px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;}
 .nform button:hover{background:var(--ordk);}
-
 .nshow{display:none;align-items:center;gap:10px;}
-
 .nshow.on{display:flex;}
-
-.navatar{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--or),var(--yw));display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;}
-
+.navatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--or),var(--yw));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;}
 .nname{font-size:14px;font-weight:700;}
-
 .nsub{font-size:11px;color:var(--muted);}
+.nedit{margin-left:auto;font-size:11px;color:var(--muted);background:none;border:1px solid var(--bd);border-radius:99px;padding:3px 11px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;}
 
-.nedit{margin-left:auto;font-size:11px;color:var(--muted);background:none;border:1px solid var(--bd);border-radius:99px;padding:3px 12px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;}
+/* ── コンテンツ共通 ── */
+.tab-content{display:none;max-width:540px;margin:0 auto;padding:14px 12px 20px;}
+.tab-content.active{display:block;}
 
+/* ══ タブ①：ホーム ══ */
 
-/* ─ コンテンツ ─ */
-.wrap{max-width:520px;margin:0 auto;padding:14px 14px 60px;}
-
-
-/* ─ 正解状況 ─ */
-.qbox{background:var(--card);border-radius:18px;border:1.5px solid var(--bd);padding:14px 16px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.05);}
-
-.qbox-head{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:11px;}
-
-.qrow{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-
-.qrow:last-child{margin-bottom:0;}
-
-.qlbl{width:40px;flex-shrink:0;font-size:11px;font-weight:700;color:#888;}
-
-.qbar{position:relative;flex:1;height:10px;border-radius:99px;background:var(--bd2);overflow:hidden;}
-
-.qfill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--or),var(--yw));border-radius:99px;transition:width .7s ease;}
-
-.qnum{width:56px;text-align:right;font-size:10px;font-weight:700;color:#999;white-space:nowrap;}
-
-
-/* ─ スタンプボード ─ */
-.sboard{background:var(--card);border-radius:20px;border:2.5px solid var(--or);margin-bottom:16px;overflow:hidden;box-shadow:0 4px 24px rgba(249,115,22,.14),0 0 0 5px rgba(249,115,22,.06);}
-
+/* スタンプボード */
+.sboard{background:var(--card);border-radius:18px;border:2.5px solid var(--or);margin-bottom:14px;overflow:hidden;box-shadow:0 4px 20px rgba(249,115,22,.14),0 0 0 4px rgba(249,115,22,.06);}
 .sstripe{height:5px;background:repeating-linear-gradient(90deg,var(--or) 0,var(--or) 16px,var(--yw) 16px,var(--yw) 32px,#fb923c 32px,#fb923c 48px);}
-
-.sboard-head{padding:14px 16px 0;display:flex;align-items:center;justify-content:space-between;}
-
+.sboard-head{padding:12px 16px 0;display:flex;align-items:center;justify-content:space-between;}
 .sboard-title{font-size:14px;font-weight:900;color:var(--ordk);}
-
-.scount{font-family:'Nunito',sans-serif;font-size:34px;font-weight:900;color:var(--or);line-height:1;}
-
-.scount small{font-size:14px;color:#bbb;margin-left:2px;}
-
-.sgrid-wrap{padding:12px 14px 14px;}
-
-
-/* ★ スタンプグリッド 3列 ★ */
-.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;}
-
-.scell{position:relative;width:100%;padding-top:100%;border-radius:14px;background:#fdf4e8;border:2.5px dashed #e0b87a;overflow:hidden;}
-
-.scell.on{background:linear-gradient(145deg,#fff7ed,#ffedd5);border:2.5px solid var(--or);box-shadow:0 4px 16px rgba(249,115,22,.18);animation:pop .5s cubic-bezier(.34,1.56,.64,1);}
-0%{opacity:1;transform:translateY(-10px) rotate(0);}
-65%{transform:scale(1.08) rotate(2deg);}
-100%{opacity:0;transform:translateY(110vh) rotate(540deg);}
-
-.scell.on::after{content:'';position:absolute;inset:5px;border-radius:9px;border:1.5px dashed rgba(249,115,22,.22);pointer-events:none;}
-
+.scount{font-family:'Nunito',sans-serif;font-size:32px;font-weight:900;color:var(--or);line-height:1;}
+.scount small{font-size:13px;color:#bbb;margin-left:2px;}
+.sgrid-wrap{padding:10px 12px 12px;}
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;}
+.scell{position:relative;width:100%;padding-top:100%;border-radius:12px;background:#fdf4e8;border:2.5px dashed #e0b87a;overflow:hidden;}
+.scell.on{background:linear-gradient(145deg,#fff7ed,#ffedd5);border:2.5px solid var(--or);box-shadow:0 4px 14px rgba(249,115,22,.2);animation:spop .5s cubic-bezier(.34,1.56,.64,1);}
+@keyframes spop{0%{transform:scale(.45) rotate(-12deg);opacity:0;}65%{transform:scale(1.08) rotate(2deg);}100%{transform:scale(1) rotate(0);opacity:1;}}
+.scell.on::after{content:'';position:absolute;inset:4px;border-radius:8px;border:1.5px dashed rgba(249,115,22,.22);pointer-events:none;}
 .scell-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-
-.sno{position:absolute;top:5px;left:7px;font-size:9px;font-weight:700;color:#c49060;opacity:.65;}
-
+.sno{position:absolute;top:4px;left:6px;font-size:9px;font-weight:700;color:#c49060;opacity:.65;font-family:'Nunito',sans-serif;}
 .sempty{font-size:22px;opacity:.2;}
-
-.semoji{font-size:32px;line-height:1;margin-bottom:4px;}
-
-.simg{width:58%;aspect-ratio:1;border-radius:7px;overflow:hidden;margin-bottom:4px;}
-
+.semoji{font-size:30px;line-height:1;margin-bottom:3px;}
+.simg{width:56%;aspect-ratio:1;border-radius:6px;overflow:hidden;margin-bottom:3px;}
 .simg img{width:100%;height:100%;object-fit:cover;}
+.slbl{font-size:8px;font-weight:700;color:var(--ordk);text-align:center;padding:0 3px;line-height:1.2;}
 
-.slbl{font-size:9px;font-weight:700;color:var(--ordk);text-align:center;padding:0 4px;line-height:1.2;}
-
-
-/* ─ あとN問バナー ─ */
-.rbanner{margin-top:2px;margin-bottom:10px;border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px;transition:all .3s;}
-
+/* あとN問バナー */
+.rbanner{margin-top:2px;margin-bottom:8px;border-radius:10px;padding:9px 13px;display:flex;align-items:center;gap:9px;transition:all .3s;}
 .rbanner.many{background:var(--orlt);color:var(--ordk);border:1.5px solid var(--orbd);}
-
 .rbanner.few{background:var(--ywlt);color:#78350f;border:1.5px solid #fde68a;animation:glow .9s ease-in-out infinite alternate;}
-
 .rbanner.last{background:var(--gnlt);color:#14532d;border:1.5px solid #86efac;animation:glow .9s ease-in-out infinite alternate;}
-
 .rbanner.done{background:linear-gradient(135deg,var(--or),var(--yw));color:#fff;border:none;}
-from{opacity:0;transform:translateY(6px);}
-to{opacity:1;transform:none;}
-
-.rbanner-icon{font-size:22px;flex-shrink:0;}
-
-.rbanner-main{font-size:14px;font-weight:900;}
-
-.rbanner-sub{font-size:11px;opacity:.75;margin-top:1px;}
-
-
-/* ─ プログレスバー ─ */
-.prog{height:8px;background:var(--bd2);border-radius:99px;overflow:hidden;}
-
+@keyframes glow{from{box-shadow:0 0 0 0 rgba(249,115,22,.3);}to{box-shadow:0 0 0 6px rgba(249,115,22,0);}}
+.rbanner-icon{font-size:20px;flex-shrink:0;}
+.rbanner-main{font-size:13px;font-weight:900;}
+.rbanner-sub{font-size:10px;opacity:.75;margin-top:1px;}
+.prog{height:7px;background:var(--bd2);border-radius:99px;overflow:hidden;}
 .prog-fill{height:100%;background:linear-gradient(90deg,var(--or),var(--yw));border-radius:99px;transition:width .8s ease;}
 
+/* みんなの正解状況 */
+.qbox{background:var(--card);border-radius:16px;border:1.5px solid var(--bd);padding:13px 15px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.qbox-head{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;}
+.qrow{display:flex;align-items:center;gap:9px;margin-bottom:7px;}
+.qrow:last-child{margin-bottom:0;}
+.qlbl{width:38px;flex-shrink:0;font-size:11px;font-weight:700;color:#888;}
+.qbar{position:relative;flex:1;height:9px;border-radius:99px;background:var(--bd2);overflow:hidden;}
+.qfill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--or),var(--yw));border-radius:99px;transition:width .7s ease;}
+.qnum{width:54px;text-align:right;font-size:10px;font-weight:700;color:#999;white-space:nowrap;}
 
-/* ─ スポット一覧 ─ */
-.spots{background:var(--card);border-radius:18px;border:1.5px solid var(--bd);margin-bottom:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.05);}
+/* ══ タブ②：対象スポット ══ */
 
-.spots-hd{padding:13px 16px;border-bottom:1.5px solid var(--bd2);display:flex;align-items:center;justify-content:space-between;}
+/* ★ 2列グリッドカード ★ */
+.spots-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;}
+.spot-card{background:var(--card);border-radius:14px;overflow:hidden;border:2px solid var(--bd);box-shadow:0 2px 8px rgba(0,0,0,.06);cursor:pointer;transition:all .2s;position:relative;}
+.spot-card:hover{border-color:var(--or);transform:translateY(-2px);box-shadow:0 6px 20px rgba(249,115,22,.14);}
+.spot-card.solved{border-color:var(--gn);}
 
-.spots-hd-title{font-size:14px;font-weight:900;color:var(--ink);display:flex;align-items:center;gap:8px;}
+/* サムネイル */
+.spot-thumb{width:100%;aspect-ratio:4/3;background:var(--bd2);display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden;position:relative;}
+.spot-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+/* 解決済みオーバーレイ */
+.spot-solved-overlay{display:none;position:absolute;inset:0;background:rgba(22,163,74,.55);align-items:center;justify-content:center;}
+.spot-card.solved .spot-solved-overlay{display:flex;}
+.spot-solved-mark{font-size:44px;}
+/* 番号バッジ */
+.spot-no-badge{position:absolute;top:7px;left:7px;background:var(--or);color:#fff;font-size:11px;font-weight:900;padding:3px 9px;border-radius:99px;font-family:'Nunito',sans-serif;box-shadow:0 2px 6px rgba(0,0,0,.2);}
+.spot-card.solved .spot-no-badge{background:var(--gn);}
 
-.spots-hd-title::before{content:'';width:4px;height:16px;background:linear-gradient(to bottom,var(--or),var(--yw));border-radius:2px;flex-shrink:0;}
+/* カード情報 */
+.spot-info{padding:9px 10px 10px;}
+.spot-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px;line-height:1.3;}
+.spot-desc{font-size:10px;color:#999;line-height:1.4;margin-bottom:4px;}
+.spot-status{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:99px;}
+.spot-status.todo{background:var(--orlt);color:var(--ordk);border:1px solid var(--orbd);}
+.spot-status.done{background:var(--gnlt);color:#15803d;border:1px solid #86efac;}
 
-.spots-badge{font-size:11px;font-weight:700;color:var(--or);background:var(--orlt);border:1px solid var(--orbd);border-radius:99px;padding:3px 10px;}
-
-
-.spot-wrap{border-bottom:1.5px solid var(--bd2);}
-
-.spot-wrap:last-child{border-bottom:none;}
-
-.spot-card{display:flex;align-items:stretch;cursor:pointer;transition:background .15s;}
-
-.spot-card:hover{background:#fffbf5;}
-
-.spot-card.solved{background:#f0fdf4;}
-
-.spot-thumb{width:84px;min-height:84px;flex-shrink:0;background:var(--bd2);display:flex;align-items:center;justify-content:center;font-size:34px;overflow:hidden;position:relative;}
-
-.spot-thumb img{width:100%;height:100%;object-fit:cover;}
-
-.spot-ok{position:absolute;top:5px;right:4px;background:#22c55e;color:#fff;font-size:8px;font-weight:700;padding:2px 6px;border-radius:99px;display:none;}
-
-.spot-card.solved .spot-ok{display:block;}
-
-.spot-info{flex:1;padding:11px 12px;min-width:0;}
-
-.spot-hook{font-size:11px;font-weight:700;color:var(--pu);margin-bottom:3px;}
-
-.spot-story{font-size:11px;color:#aaa;font-style:italic;margin-bottom:3px;}
-
-.spot-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px;}
-
-.spot-desc{font-size:11px;color:#999;line-height:1.5;margin-bottom:4px;}
-
-.spot-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-
-.spot-hint-txt{font-size:10px;color:#bbb;}
-
-.spot-heat{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;}
-
-.spot-heat.hot{background:#fee2e2;color:#b91c1c;}
-
-.spot-heat.warm{background:var(--orlt);color:var(--ordk);}
-
-.spot-heat.cool{background:var(--gnlt);color:var(--gn);}
-
-.spot-arr{padding:0 12px;display:flex;align-items:center;color:#ccc;font-size:14px;}
-
-.spot-card.solved .spot-arr{color:#86efac;}
-
-
-/* ─ 展開エリア ─ */
-.spot-detail{display:none;border-top:1.5px dashed var(--bd2);padding:14px;background:#fffdf8;}
-
-.spot-detail.open{display:block;}
-
-.spot-imgs{overflow-x:auto;display:flex;gap:8px;margin-bottom:12px;}
-
-.spot-imgs::-webkit-scrollbar{display:none;}
-
-.spot-img{flex-shrink:0;width:100%;border-radius:10px;overflow:hidden;}
-
-.spot-img.multi{width:80%;}
-
-.spot-img img{width:100%;max-height:190px;object-fit:cover;display:block;}
-
-.spot-q{font-size:15px;font-weight:700;line-height:1.85;color:var(--ink);margin-bottom:14px;}
-
-.ans-row{display:flex;gap:8px;margin-bottom:10px;}
-
+/* ── モーダル（問題詳細） ── */
+.modal-mask{display:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.5);overflow-y:auto;padding:16px;align-items:flex-start;justify-content:center;}
+.modal-mask.on{display:flex;animation:min .2s ease;}
+@keyframes min{from{opacity:0}to{opacity:1}}
+.modal-box{background:var(--card);border-radius:20px;max-width:500px;width:100%;margin:auto;overflow:hidden;box-shadow:0 16px 60px rgba(0,0,0,.25);animation:mbox .3s cubic-bezier(.34,1.56,.64,1);}
+@keyframes mbox{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-imgs{display:flex;gap:0;overflow-x:auto;}
+.modal-imgs::-webkit-scrollbar{display:none;}
+.modal-img-item{flex-shrink:0;width:100%;}
+.modal-img-item.multi{width:85%;}
+.modal-img-item img{width:100%;max-height:240px;object-fit:cover;display:block;}
+.modal-no-img{height:8px;background:linear-gradient(90deg,var(--or),var(--yw));}
+.modal-content{padding:16px 16px 18px;}
+.modal-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.modal-no{width:38px;height:38px;border-radius:10px;background:var(--or);border:2px solid var(--ordk);display:grid;place-items:center;font-family:'Nunito',sans-serif;font-size:16px;font-weight:900;color:#fff;flex-shrink:0;}
+.modal-title{font-size:16px;font-weight:900;color:var(--ink);flex:1;line-height:1.3;}
+.modal-close{background:#f3e8d8;border:none;border-radius:99px;padding:6px 14px;font-size:12px;color:var(--muted);cursor:pointer;font-family:'Noto Sans JP',sans-serif;flex-shrink:0;}
+/* 家族向け煽り文・ストーリー */
+.modal-hook{font-size:12px;font-weight:700;color:var(--pu);margin-bottom:4px;}
+.modal-story{font-size:11px;color:#aaa;font-style:italic;margin-bottom:10px;}
+.modal-q{font-size:15px;font-weight:700;line-height:1.85;color:var(--ink);margin-bottom:14px;}
+/* 回答エリア */
+.ans-row{display:flex;gap:8px;margin-bottom:9px;}
 .ans-inp{flex:1;border:2px solid var(--bd);border-radius:99px;padding:11px 16px;font-size:16px;outline:none;font-family:'Noto Sans JP',sans-serif;background:var(--orlt);transition:border-color .2s;}
-
 .ans-inp:focus{border-color:var(--or);}
-
-.ans-btn{background:var(--or);color:#fff;border:none;border-radius:99px;padding:11px 22px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Noto Sans JP',sans-serif;transition:background .15s;}
-
+.ans-btn{background:var(--or);color:#fff;border:none;border-radius:99px;padding:11px 22px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Noto Sans JP',sans-serif;}
 .ans-btn:hover{background:var(--ordk);}
-
-.ans-fb{padding:10px 14px;border-radius:12px;margin-bottom:10px;font-size:13px;font-weight:700;display:none;line-height:1.6;}
-
+.ans-fb{padding:10px 14px;border-radius:11px;margin-bottom:9px;font-size:13px;font-weight:700;display:none;line-height:1.6;}
 .ans-fb.ok{display:block;background:var(--gnlt);color:#15803d;border:1.5px solid #86efac;}
-
 .ans-fb.ng{display:block;background:var(--ywlt);color:#92400e;border:1.5px solid #fde68a;}
-
-.hint-btn{display:inline-flex;align-items:center;gap:7px;background:var(--ywlt);border:1.5px solid #fde68a;border-radius:99px;padding:8px 16px;font-size:12px;font-weight:700;color:#92400e;cursor:pointer;font-family:'Noto Sans JP',sans-serif;}
-
+/* ヒント */
+.hint-btn{display:inline-flex;align-items:center;gap:6px;background:var(--ywlt);border:1.5px solid #fde68a;border-radius:99px;padding:7px 15px;font-size:12px;font-weight:700;color:#92400e;cursor:pointer;font-family:'Noto Sans JP',sans-serif;}
 .hint-btn:hover{background:#fef08a;}
-
 .hint-cnt{background:var(--yw);color:#78350f;border-radius:99px;padding:1px 8px;font-size:9px;font-weight:900;}
-
-.hint-row{display:none;margin-top:8px;padding:10px 14px;background:var(--ywlt);border-left:3px solid var(--yw);border-radius:0 10px 10px 0;font-size:13px;line-height:1.7;}
-
-.hint-row.show{display:block;}
-
-.hint-img{margin-top:7px;border-radius:8px;overflow:hidden;}
-
-.hint-img img{width:100%;max-height:140px;object-fit:cover;display:block;}
-
+.hint-item{display:none;margin-top:8px;padding:10px 13px;background:var(--ywlt);border-left:3px solid var(--yw);border-radius:0 10px 10px 0;font-size:13px;line-height:1.7;}
+.hint-item.show{display:block;}
+.hint-himg{margin-top:7px;border-radius:8px;overflow:hidden;}
+.hint-himg img{width:100%;max-height:150px;object-fit:cover;display:block;}
 .solved-msg{text-align:center;padding:14px 0 8px;font-size:20px;font-weight:900;color:var(--gn);}
-
 .next-guide{background:var(--pult);border-left:3px solid var(--pu);border-radius:0 10px 10px 0;padding:10px 13px;margin-top:10px;font-size:12px;font-weight:700;color:#5b21b6;line-height:1.6;}
 
-
-/* ─ 特典 ─ */
-.rewards{background:var(--card);border-radius:18px;border:1.5px solid var(--bd);margin-bottom:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.05);}
-
-.rewards-hd{padding:13px 16px;border-bottom:1.5px solid var(--bd2);font-size:14px;font-weight:900;display:flex;align-items:center;gap:8px;}
-
-.rewards-hd::before{content:'';width:4px;height:16px;background:linear-gradient(to bottom,var(--yw),var(--or));border-radius:2px;flex-shrink:0;}
-
-.rcard{display:flex;align-items:center;gap:13px;padding:13px 14px;border-bottom:1.5px solid var(--bd2);transition:background .2s;}
-
-.rcard:last-child{border-bottom:none;}
-
-.rcard.open{background:var(--ywlt);}
-
+/* ══ タブ③：クリア特典 ══ */
+.rewards-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+.rcard{background:var(--card);border-radius:16px;border:2px solid var(--bd);padding:14px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.04);transition:all .25s;}
+.rcard.open{border-color:var(--yw);background:var(--ywlt);box-shadow:0 4px 16px rgba(251,191,36,.18);}
 .rcard.almost{background:#fff7ed;border-left:3px solid #fb923c;}
-
 .rico{width:48px;height:48px;border-radius:12px;flex-shrink:0;background:var(--orlt);border:1.5px solid var(--orbd);display:flex;align-items:center;justify-content:center;font-size:24px;}
-
 .rcard.open .rico{background:var(--ywlt);border-color:#fde68a;}
-
-.rname{font-size:14px;font-weight:700;margin-bottom:3px;}
-
+.rname{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px;}
 .rcond{font-size:11px;color:var(--muted);}
-
 .ralmost{font-size:10px;font-weight:700;color:var(--ordk);background:var(--orlt);border:1px solid var(--orbd);border-radius:99px;padding:2px 8px;display:inline-block;margin-top:3px;}
-
 .rlock{font-size:22px;margin-left:auto;flex-shrink:0;}
 
-
-/* ─ 注意事項 ─ */
-.caution{background:var(--card);border-radius:16px;border:1.5px solid var(--bd);padding:14px 16px;margin-bottom:14px;}
-
+/* ══ タブ④：注意事項 ══ */
+.caution{background:var(--card);border-radius:16px;border:1.5px solid var(--bd);padding:14px 16px;}
 .caution-title{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px;}
-
 .caution-body{font-size:11px;color:#888;line-height:2;white-space:pre-wrap;}
 
+/* ══ 下部タブナビゲーション ══ */
+.tab-nav{position:fixed;bottom:0;left:0;right:0;z-index:500;background:var(--card);border-top:2px solid var(--bd);display:flex;box-shadow:0 -4px 20px rgba(0,0,0,.08);}
+.tab-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px 6px;cursor:pointer;transition:all .15s;border:none;background:none;font-family:'Noto Sans JP',sans-serif;-webkit-tap-highlight-color:transparent;}
+.tab-nav-icon{font-size:20px;margin-bottom:3px;transition:transform .2s;}
+.tab-nav-label{font-size:9px;font-weight:700;color:#bbb;letter-spacing:.03em;}
+.tab-nav-item.active .tab-nav-icon{transform:scale(1.15);}
+.tab-nav-item.active .tab-nav-label{color:var(--or);}
 
-/* ─ 達成演出 ─ */
-.ach-ov{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:800;pointer-events:none;}
-
+/* ══ 達成演出 ══ */
+.ach-ov{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:900;pointer-events:none;}
 .ach-ov.on{display:block;}
-
 .ach-box{position:absolute;top:60px;left:50%;transform:translateX(-50%) translateY(-120px);background:#fff;border-radius:20px;padding:20px 28px 16px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.18);min-width:240px;max-width:300px;border-top:4px solid var(--gn);transition:transform .45s cubic-bezier(.34,1.56,.64,1);pointer-events:auto;}
-
 .ach-ov.on .ach-box{transform:translateX(-50%) translateY(0);}
-
 .ach-emoji{font-size:48px;display:block;margin-bottom:6px;animation:wig .5s ease;}
-40%{transform:rotate(10deg) scale(1.2);}
-70%{transform:rotate(-5deg) scale(1.05);}
-
+@keyframes wig{0%{transform:rotate(-15deg) scale(.8);}40%{transform:rotate(10deg) scale(1.2);}70%{transform:rotate(-5deg) scale(1.05);}100%{transform:rotate(0) scale(1);}}
 .ach-praise{font-family:'Nunito',sans-serif;font-size:22px;font-weight:900;color:#15803d;margin-bottom:4px;}
-
 .ach-sub{font-size:12px;color:#666;line-height:1.6;}
-
 .ach-rem{display:inline-block;margin-top:8px;font-size:13px;font-weight:900;color:var(--or);background:var(--orlt);border:1.5px solid var(--orbd);border-radius:99px;padding:4px 16px;}
 
-
-/* ─ 全問正解ポップアップ ─ */
+/* ══ 全問正解ポップアップ ══ */
 .pop-mask{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px;}
-
 .pop-mask.on{display:flex;}
-
 .pop-box{background:#fff;border-radius:24px;max-width:360px;width:100%;padding:28px 24px 22px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:popin .45s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden;}
-
+@keyframes popin{from{transform:scale(.6);opacity:0;}to{transform:scale(1);opacity:1;}}
 .pop-box::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--or),var(--yw),var(--gn));}
-
 .pop-fire{font-size:56px;display:block;animation:float .9s ease-in-out infinite alternate;}
-
+@keyframes float{from{transform:translateY(0);}to{transform:translateY(-8px);}}
 .pop-title{font-family:'Nunito',sans-serif;font-size:26px;font-weight:900;color:#222;margin:8px 0 5px;line-height:1.2;}
-
 .pop-msg{font-size:13px;color:#666;line-height:1.7;margin-bottom:16px;}
-
 .pop-reward{background:var(--orlt);border:2px solid var(--orbd);border-radius:13px;padding:14px;margin-bottom:16px;}
-
 .pop-rlbl{font-size:10px;font-weight:700;color:var(--ordk);letter-spacing:.06em;margin-bottom:5px;}
-
 .pop-rname{font-size:18px;font-weight:900;color:#222;}
-
 .pop-rdesc{font-size:12px;color:#666;margin-top:4px;line-height:1.6;}
-
 .pop-close{background:var(--or);color:#fff;border:none;border-radius:99px;padding:12px 36px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;}
-
 .pop-close:hover{background:var(--ordk);}
 
-
-/* ─ 紙吹雪 ─ */
+/* 紙吹雪 */
 .cf-wrap{position:fixed;inset:0;pointer-events:none;z-index:998;overflow:hidden;}
-
 .cf{position:absolute;border-radius:2px;animation:cfall linear forwards;}
-
-
-/* ─ トースト ─ */
-.toast-wrap{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:700;display:flex;flex-direction:column-reverse;gap:7px;pointer-events:none;}
-
-.toast{background:rgba(50,30,10,.9);color:#fff;border-radius:99px;padding:9px 22px;font-size:12px;font-weight:700;white-space:nowrap;animation:tin .3s ease;}
-
-.toast.err{background:rgba(180,50,50,.9);}
-@keyframes pop{0%{transform:scale(.45) rotate(-12deg);opacity:0;}65%{transform:scale(1.08) rotate(2deg);}100%{transform:scale(1) rotate(0);opacity:1;}}
-@keyframes glow{from{box-shadow:0 0 0 0 rgba(249,115,22,.3);}to{box-shadow:0 0 0 6px rgba(249,115,22,0);}}
-@keyframes wig{0%{transform:rotate(-15deg) scale(.8);}40%{transform:rotate(10deg) scale(1.2);}70%{transform:rotate(-5deg) scale(1.05);}100%{transform:rotate(0) scale(1);}}
-@keyframes popin{from{transform:scale(.6);opacity:0;}to{transform:scale(1);opacity:1;}}
-@keyframes float{from{transform:translateY(0);}to{transform:translateY(-8px);}}
 @keyframes cfall{0%{opacity:1;transform:translateY(-10px) rotate(0);}100%{opacity:0;transform:translateY(110vh) rotate(540deg);}}
-@keyframes tin{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
 
+/* トースト */
+.toast-wrap{position:fixed;bottom:78px;left:50%;transform:translateX(-50%);z-index:700;display:flex;flex-direction:column-reverse;gap:7px;pointer-events:none;}
+.toast{background:rgba(50,30,10,.9);color:#fff;border-radius:99px;padding:9px 22px;font-size:12px;font-weight:700;white-space:nowrap;animation:tin .3s ease;}
+.toast.err{background:rgba(180,50,50,.9);}
+@keyframes tin{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
 </style>
 </head>
 <body>
@@ -401,6 +253,14 @@ to{opacity:1;transform:none;}
       <div class="pop-rdesc" id="pr-desc">受付スタッフにこの画面をお見せください。</div>
     </div>
     <button class="pop-close" onclick="closePop()">とじる</button>
+  </div>
+</div>
+
+<!-- 問題モーダル -->
+<div class="modal-mask" id="modal-mask">
+  <div class="modal-box">
+    <div id="modal-imgs-area"></div>
+    <div class="modal-content" id="modal-content"></div>
   </div>
 </div>
 
@@ -434,99 +294,132 @@ to{opacity:1;transform:none;}
   </div>
 </div>
 
-<div class="wrap">
+<!-- ★ タブコンテンツ ★ -->
 
-  <!-- みんなの正解状況 -->
-  <div class="qbox">
-    <div class="qbox-head">📊 みんなの正解状況</div>
-    <div id="qstat"></div>
-  </div>
+<!-- タブ①：ホーム -->
+<div class="tab-content active" id="tab-home">
+  <div style="max-width:540px;margin:0 auto;padding:14px 12px 20px;">
 
-  <!-- スタンプボード -->
-  <div class="sboard">
-    <div class="sstripe"></div>
-    <div class="sboard-head">
-      <div class="sboard-title">🎨 集めたスタンプ</div>
-      <div class="scount" id="scount">0<small>個</small></div>
+    <!-- みんなの正解状況 -->
+    <div class="qbox">
+      <div class="qbox-head">📊 みんなの正解状況</div>
+      <div id="qstat"></div>
     </div>
-    <div class="sgrid-wrap">
-      <div class="sgrid" id="sgrid"></div>
-      <div class="rbanner many" id="rbanner">
-        <div class="rbanner-icon" id="rb-icon">🗺</div>
-        <div>
-          <div class="rbanner-main" id="rb-main">さあ、謎解きのはじまり！</div>
-          <div class="rbanner-sub" id="rb-sub">スタンプを全部集めよう！</div>
-        </div>
+
+    <!-- スタンプボード -->
+    <div class="sboard">
+      <div class="sstripe"></div>
+      <div class="sboard-head">
+        <div class="sboard-title">🎨 集めたスタンプ</div>
+        <div class="scount" id="scount">0<small>個</small></div>
       </div>
-      <div class="prog"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+      <div class="sgrid-wrap">
+        <div class="sgrid" id="sgrid"></div>
+        <div class="rbanner many" id="rbanner">
+          <div class="rbanner-icon" id="rb-icon">🗺</div>
+          <div>
+            <div class="rbanner-main" id="rb-main">さあ、謎解きのはじまり！</div>
+            <div class="rbanner-sub" id="rb-sub">スタンプを全部集めよう！</div>
+          </div>
+        </div>
+        <div class="prog"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+      </div>
     </div>
-  </div>
 
-  <!-- スポット一覧 -->
-  <div class="spots">
-    <div class="spots-hd">
-      <div class="spots-hd-title" id="spots-label">対象スポット</div>
-      <div class="spots-badge" id="spots-badge">0/0クリア</div>
-    </div>
-    <div id="spots-list"></div>
   </div>
-
-  <!-- 特典 -->
-  <div class="rewards">
-    <div class="rewards-hd">クリア特典</div>
-    <div id="rewards-list"></div>
-  </div>
-
-  <!-- 注意事項 -->
-  <div class="caution">
-    <div class="caution-title">⚠ 注意事項</div>
-    <div class="caution-body" id="caution-body"></div>
-  </div>
-
 </div>
+
+<!-- タブ②：対象スポット -->
+<div class="tab-content" id="tab-spots">
+  <div style="max-width:540px;margin:0 auto;padding:14px 12px 20px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div style="font-size:15px;font-weight:900;color:var(--ink);display:flex;align-items:center;gap:8px;">
+        <span style="width:4px;height:18px;background:linear-gradient(to bottom,var(--or),var(--yw));border-radius:2px;display:inline-block;"></span>
+        <span id="spots-label">対象スポット</span>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--or);background:var(--orlt);border:1px solid var(--orbd);border-radius:99px;padding:3px 10px;" id="spots-badge">0/0クリア</div>
+    </div>
+    <div class="spots-grid" id="spots-grid"></div>
+  </div>
+</div>
+
+<!-- タブ③：クリア特典 -->
+<div class="tab-content" id="tab-rewards">
+  <div style="max-width:540px;margin:0 auto;padding:14px 12px 20px;">
+    <div style="font-size:15px;font-weight:900;color:var(--ink);display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <span style="width:4px;height:18px;background:linear-gradient(to bottom,var(--yw),var(--or));border-radius:2px;display:inline-block;"></span>
+      クリア特典
+    </div>
+    <div class="rewards-list" id="rewards-list"></div>
+  </div>
+</div>
+
+<!-- タブ④：注意事項 -->
+<div class="tab-content" id="tab-caution">
+  <div style="max-width:540px;margin:0 auto;padding:14px 12px 20px;">
+    <div class="caution">
+      <div class="caution-title">⚠ 注意事項</div>
+      <div class="caution-body" id="caution-body"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ★ タブナビゲーション ★ -->
+<nav class="tab-nav">
+  <button class="tab-nav-item active" id="nav-home" onclick="switchTab('home')">
+    <span class="tab-nav-icon">🏠</span>
+    <span class="tab-nav-label">ホーム</span>
+  </button>
+  <button class="tab-nav-item" id="nav-spots" onclick="switchTab('spots')">
+    <span class="tab-nav-icon">🗺</span>
+    <span class="tab-nav-label" id="nav-spots-label">対象スポット</span>
+  </button>
+  <button class="tab-nav-item" id="nav-rewards" onclick="switchTab('rewards')">
+    <span class="tab-nav-icon">🎁</span>
+    <span class="tab-nav-label">クリア特典</span>
+  </button>
+  <button class="tab-nav-item" id="nav-caution" onclick="switchTab('caution')">
+    <span class="tab-nav-icon">📋</span>
+    <span class="tab-nav-label">注意事項</span>
+  </button>
+</nav>
+
 <div class="toast-wrap" id="toast-wrap"></div>
 
 <script>
 var CAUTION_DEFAULT="■ スタンプラリー参加にあたっての注意事項\n\n【参加方法】\n・各スポットのパネルを見つけてください。\n・正解を入力するとスタンプを獲得できます。\n・間違えても何度でも挑戦できます。\n\n【スマートフォンについて】\n・歩きスマホは危険です。立ち止まってご使用ください。\n・スタンプデータはこのブラウザに保存されます。\n\n【特典交換】\n・受付スタッフにこの画面をご提示ください。\n\n【その他】\n・主催：（主催者名）　お問い合わせ：（連絡先）\n・荒天時は中止の場合があります。";
 var PRAISES=["やったね！🎉","すごい！✨","天才！🌟","正解！👏","ブラボー！🎊","かしこい！💡"];
-
-/* ═══ GAS連携 ═══ */
 var GAS_URL='https://script.google.com/macros/s/AKfycbzJ9f9c9g9iKWmYq1kz3NyCDE-NWatx1rTuKVuE8YYhpwf8jy23Y3sFVKKSAdT6K9koIg/exec';
-function gasGet(){
-  return fetch(GAS_URL+'?action=all')
-    .then(function(r){return r.json();})
-    .catch(function(e){console.warn('GAS読み込みエラー',e);return null;});
-}
 
 var quizData=[
   {id:1,no:1,title:"公園の謎①",hook:"🧒 子どもへ：パネルをよーく見てね！",story:"冒険のスタート！まず噴水のひみつを解き明かせ！",desc:"ヒントをもとに答えを探そう！",q:"久屋大通り公園にある噴水は何の形をしているでしょう？\n\nパネルをよく見て考えてみてね！",ans:"たい",sType:"emoji",sEmoji:"🐟",sImg:null,images:[],hints:[{text:"水の中に住む生き物です",img:null},{text:"よく食べられる魚です",img:null}],nextGuide:"🗺 噴水の近くに花がたくさん咲いているよ。次はそこへGO！",status:"published"},
-  {id:2,no:2,title:"花の謎②",hook:"👨 パパ・ママへ：お子さんと一緒に考えてみて！",story:"噴水のひみつを解いたね！次は花のなまえだ！",desc:"春に咲く花の名前を当てよう",q:"春になると公園に咲くこの花の名前は何でしょう？",ans:"さくら",sType:"emoji",sEmoji:"🌸",sImg:null,images:[],hints:[{text:"春の日本の花といえばこれ！",img:null}],nextGuide:"🗺 次は近くにある高〜いタワーを探してみよう！",status:"published"},
-  {id:3,no:3,title:"建物の謎③",hook:"👴 おじいちゃん・おばあちゃんへ：昔のことを教えてあげて！",story:"花の謎クリア！次は高い建物のなまえだ！",desc:"近くにある有名なタワーは？",q:"公園の近くにある高いタワーの名前は？（ひらがなで）",ans:"てれびとう",sType:"emoji",sEmoji:"📡",sImg:null,images:[],hints:[{text:"テレビの電波を送る建物です",img:null}],nextGuide:"🗺 次はこの公園の名前のひみつに迫れ！",status:"published"},
-  {id:4,no:4,title:"歴史の謎④",hook:"👨‍👩‍👧 家族みんなで相談してみよう！",story:"もう少し！公園の名前のよみかたを調べよう！",desc:"公園の名前の読み方は？",q:"この公園の「久屋」という読み方は？",ans:"ひさや",sType:"emoji",sEmoji:"🏛️",sImg:null,images:[],hints:[{text:"漢字の読み方をじっくり考えてみよう",img:null}],nextGuide:"🗺 ラスト1問！これまでの謎の答えを全部思い出して！",status:"published"},
-  {id:5,no:5,title:"最終謎⑤",hook:"🌟 ラスト！家族全員の力を合わせて！",story:"ついに最終謎！謎①〜④の答えをすべて思い出して！",desc:"全ての謎の答えをつなげると？",q:"謎①〜④の答えの頭文字をつなげると何になる？",ans:"たさてひ",sType:"emoji",sEmoji:"🔑",sImg:null,images:[],hints:[{text:"4文字の言葉です",img:null}],nextGuide:"",status:"published"}
+  {id:2,no:2,title:"花の謎②",hook:"👨 パパ・ママへ：お子さんと一緒に考えてみて！",story:"次は公園に咲く花のなまえだ！",desc:"春に咲く花の名前を当てよう",q:"春になると公園に咲くこの花の名前は何でしょう？",ans:"さくら",sType:"emoji",sEmoji:"🌸",sImg:null,images:[],hints:[{text:"春の日本の花といえばこれ！",img:null}],nextGuide:"🗺 次は近くにある高〜いタワーを探してみよう！",status:"published"},
+  {id:3,no:3,title:"建物の謎③",hook:"👴 おじいちゃん・おばあちゃんへ：昔のことを教えてあげて！",story:"次は高い建物のなまえだ！",desc:"近くにある有名なタワーは？",q:"公園の近くにある高いタワーの名前は？（ひらがなで）",ans:"てれびとう",sType:"emoji",sEmoji:"📡",sImg:null,images:[],hints:[{text:"テレビの電波を送る建物です",img:null}],nextGuide:"🗺 次はこの公園の名前のひみつに迫れ！",status:"published"},
+  {id:4,no:4,title:"歴史の謎④",hook:"👨‍👩‍👧 家族みんなで相談してみよう！",story:"公園の名前のよみかたを調べよう！",desc:"公園の名前の読み方は？",q:"この公園の「久屋」という読み方は？",ans:"ひさや",sType:"emoji",sEmoji:"🏛️",sImg:null,images:[],hints:[{text:"漢字の読み方をじっくり考えてみよう",img:null}],nextGuide:"🗺 ラスト1問！これまでの謎の答えを全部思い出して！",status:"published"},
+  {id:5,no:5,title:"最終謎⑤",hook:"🌟 ラスト！家族全員の力を合わせて！",story:"ついに最終謎！",desc:"全ての謎の答えをつなげると？",q:"謎①〜④の答えの頭文字をつなげると何になる？",ans:"たさてひ",sType:"emoji",sEmoji:"🔑",sImg:null,images:[],hints:[{text:"4文字の言葉です",img:null}],nextGuide:"",status:"published"}
 ];
 var rewardData=[
   {id:1,name:"オリジナルステッカー",ico:"🎴",req:3,desc:"受付スタッフにお声がけください",allClear:false},
   {id:2,name:"全問クリア！限定グッズ",ico:"🏆",req:5,desc:"全問正解のみ！受付スタッフにこの画面をお見せください",allClear:true}
 ];
-var S={stamps:[],hintUsed:{},hintLevel:{},openId:null};
+var S={stamps:[],hintUsed:{},hintLevel:{}};
 var othProg=[3,3,2,1,0],othTotal=6;
+var currentTab='home';
 
+/* ── GAS ── */
+function gasGet(){return fetch(GAS_URL+'?action=all').then(function(r){return r.json();}).catch(function(){return null;});}
+
+/* ── 初期化 ── */
 window.addEventListener("DOMContentLoaded",function(){
-  // まずlocalStorageで即時表示し、その後GASで上書き
   try{var q=JSON.parse(localStorage.getItem("nazo_quiz"));if(q&&q.length)quizData=q;}catch(e){}
   try{var r=JSON.parse(localStorage.getItem("nazo_rewards"));if(r&&r.length)rewardData=r;}catch(e){}
   applyEvent(JSON.parse(localStorage.getItem("nazo_event")||"{}"));
   renderAll();
-  // GASから最新データを取得して上書き
   gasGet().then(function(data){
-    if(!data) return;
-    if(data.quiz&&data.quiz.length)   { quizData=data.quiz;    localStorage.setItem("nazo_quiz",JSON.stringify(quizData)); }
-    if(data.rewards&&data.rewards.length){ rewardData=data.rewards; localStorage.setItem("nazo_rewards",JSON.stringify(rewardData)); }
-    if(data.event&&Object.keys(data.event).length){
-      localStorage.setItem("nazo_event",JSON.stringify(data.event));
-      applyEvent(data.event);
-    }
+    if(!data)return;
+    if(data.quiz&&data.quiz.length){quizData=data.quiz;localStorage.setItem("nazo_quiz",JSON.stringify(quizData));}
+    if(data.rewards&&data.rewards.length){rewardData=data.rewards;localStorage.setItem("nazo_rewards",JSON.stringify(rewardData));}
+    if(data.event&&Object.keys(data.event).length){localStorage.setItem("nazo_event",JSON.stringify(data.event));applyEvent(data.event);}
     renderAll();
   });
   setInterval(function(){
@@ -542,22 +435,33 @@ window.addEventListener("DOMContentLoaded",function(){
 });
 
 function pub(){return quizData.filter(function(q){return q.status!=="hidden";});}
+function renderAll(){renderQStat();renderStamps();renderBanner();renderSpots();renderRewards();}
 
 function applyEvent(ev){
-  if(!ev) return;
+  if(!ev)return;
   try{
     if(ev.name)document.getElementById("ev-title").textContent=ev.name;
     if(ev.sub)document.getElementById("ev-sub").textContent=ev.sub;
     if(ev.logo)document.getElementById("hdr-logo").innerHTML='<img src="'+ev.logo+'">';
     if(ev.heroImg){var hi=document.getElementById("hero-img");hi.src=ev.heroImg;hi.style.display="block";}
-    if(ev.spotLabel)document.getElementById("spots-label").textContent=ev.spotLabel;
+    if(ev.spotLabel){
+      document.getElementById("spots-label").textContent=ev.spotLabel;
+      document.getElementById("nav-spots-label").textContent=ev.spotLabel;
+    }
     document.getElementById("caution-body").textContent=(ev.cautionMode==="custom"&&ev.customCaution)?ev.customCaution:CAUTION_DEFAULT;
   }catch(e){}
 }
 
-function renderAll(){renderQStat();renderStamps();renderBanner();renderSpots();renderRewards();}
+/* ── タブ切替 ── */
+function switchTab(tab){
+  currentTab=tab;
+  document.querySelectorAll(".tab-content").forEach(function(el){el.classList.remove("active");});
+  document.querySelectorAll(".tab-nav-item").forEach(function(el){el.classList.remove("active");});
+  document.getElementById("tab-"+tab).classList.add("active");
+  document.getElementById("nav-"+tab).classList.add("active");
+}
 
-/* みんなの正解状況 */
+/* ── みんなの正解状況 ── */
 function renderQStat(){
   var qs=pub(),h="";
   for(var i=0;i<qs.length;i++){
@@ -571,7 +475,7 @@ function renderQStat(){
   document.getElementById("qstat").innerHTML=h;
 }
 
-/* スタンプボード */
+/* ── スタンプボード ── */
 function renderStamps(){
   var qs=pub(),t=qs.length||1,e=S.stamps.length;
   document.getElementById("scount").innerHTML=e+'<small>個</small>';
@@ -590,7 +494,7 @@ function renderStamps(){
   document.getElementById("sgrid").innerHTML=h;
 }
 
-/* あとN問バナー */
+/* ── あとN問バナー ── */
 function renderBanner(){
   var qs=pub(),t=qs.length||1,e=S.stamps.length,rem=t-e;
   var b=document.getElementById("rbanner");
@@ -603,66 +507,101 @@ function renderBanner(){
   else{b.classList.add("done");icon.textContent="🎊";main.textContent="全問コンプリート！";sub.textContent="すごい！特典を受け取ってね！";}
 }
 
-/* スポット一覧 */
+/* ── ★ スポット一覧（2列グリッド） ── */
 function renderSpots(){
   var qs=pub(),h="",sc=0;
   for(var ci=0;ci<qs.length;ci++){if(S.stamps.indexOf(qs[ci].id)!==-1)sc++;}
   var sb=document.getElementById("spots-badge");if(sb)sb.textContent=sc+"/"+qs.length+"クリア";
   for(var i=0;i<qs.length;i++){
-    var q=qs[i],solved=(S.stamps.indexOf(q.id)!==-1),isOpen=(S.openId===q.id),hn=S.hintUsed[q.id]||0;
-    var rpct=Math.round(((othProg[i]||0)+(solved?1:0))/(othTotal+1)*100);
-    var hc=rpct>=70?"hot":rpct>=40?"warm":"cool",ht=rpct>=70?"🔥 人気問題":"🌱 "+rpct+"%が正解中";
+    var q=qs[i],solved=(S.stamps.indexOf(q.id)!==-1);
     var imgs=(q.images||[]).filter(function(im){return im&&im.url;});
-    var thumbH=(imgs.length>0?'<img src="'+imgs[0].url+'" alt="">':q.sEmoji||"❓");
-    var slideH="";
-    if(imgs.length>0){
-      slideH='<div class="spot-imgs">';
-      for(var k=0;k<imgs.length;k++)slideH+='<div class="spot-img'+(imgs.length>1?" multi":"")+'"><img src="'+imgs[k].url+'" alt=""></div>';
-      slideH+='</div>';
-    }
-    var hints=q.hints||[],hintH="";
-    for(var m=0;m<hints.length;m++){
-      var hh=hints[m],ht2=(typeof hh==="string")?hh:(hh.text||"");
-      var himg=(typeof hh==="object"&&hh.img)?'<div class="hint-img"><img src="'+hh.img+'" alt=""></div>':"";
-      hintH+='<div class="hint-row'+((S.hintLevel[q.id]||0)>m?" show":"")+'">'+ht2+himg+'</div>';
-    }
-    var detH=solved
-      ?'<div class="solved-msg">'+(q.sEmoji||"✓")+" 正解！スタンプゲット！</div>"+(q.nextGuide?'<div class="next-guide">'+q.nextGuide+'</div>':"")
-      :slideH+'<div class="spot-q">'+(q.q||"").replace(/\n/g,"<br>")+'</div>'
-        +'<div class="ans-row"><input class="ans-inp" id="ai-'+q.id+'" placeholder="こたえを入力…" maxlength="40" onkeydown="if(event.key===\'Enter\')doAns('+q.id+')">'
-        +'<button class="ans-btn" onclick="doAns('+q.id+')">送信</button></div>'
-        +'<div class="ans-fb" id="fb-'+q.id+'"></div>'
-        +'<button class="hint-btn" onclick="doHint('+q.id+')">💡 ヒントを見る <span class="hint-cnt">'+hn+'</span></button>'+hintH;
-    h+='<div class="spot-wrap"><div class="spot-card'+(solved?" solved":"")+(isOpen?" open":"")+'" onclick="toggleSpot('+q.id+')">'
-      +'<div class="spot-thumb">'+thumbH+'<div class="spot-ok">✓ 正解</div></div>'
-      +'<div class="spot-info">'+(q.hook?'<div class="spot-hook">'+q.hook+'</div>':"")
-      +(q.story&&!solved?'<div class="spot-story">📖 '+q.story+'</div>':"")
-      +'<div class="spot-title">'+q.title+'</div><div class="spot-desc">'+(q.desc||"")+'</div>'
-      +'<div class="spot-meta"><span class="spot-hint-txt">💡 ヒント使用 '+hn+'回</span>'
-      +'<span class="spot-heat '+hc+'">'+ht+'</span></div></div>'
-      +'<div class="spot-arr">'+(isOpen?"▲":"▼")+'</div></div>'
-      +'<div class="spot-detail'+(isOpen?" open":"")+'" id="sd-'+q.id+'">'+detH+'</div></div>';
+    var thumbH=(imgs.length>0)?'<img src="'+imgs[0].url+'" alt="'+q.title+'">'
+              :(q.sEmoji||"❓");
+    h+='<div class="spot-card'+(solved?" solved":"")+'" onclick="openSpot('+q.id+')">'
+      +'<div class="spot-thumb">'
+        +thumbH
+        +'<div class="spot-no-badge">Q'+q.no+'</div>'
+        +'<div class="spot-solved-overlay"><span class="spot-solved-mark">✅</span></div>'
+      +'</div>'
+      +'<div class="spot-info">'
+        +'<div class="spot-title">'+q.title+'</div>'
+        +(q.desc?'<div class="spot-desc">'+q.desc+'</div>':'')
+        +'<div class="spot-status '+(solved?'done':'todo')+'">'+(solved?'✅ 正解！':'挑戦する')+'</div>'
+      +'</div>'
+      +'</div>';
   }
-  document.getElementById("spots-list").innerHTML=h;
+  document.getElementById("spots-grid").innerHTML=h;
 }
 
-function toggleSpot(id){
-  S.openId=(S.openId===id)?null:id;renderSpots();
-  if(S.openId)setTimeout(function(){var el=document.getElementById("sd-"+id);if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});},60);
-}
+/* ── 問題モーダル ── */
+function openSpot(id){
+  var q=null;for(var i=0;i<quizData.length;i++){if(quizData[i].id===id){q=quizData[i];break;}}
+  if(!q)return;
+  var solved=(S.stamps.indexOf(id)!==-1);
+  var hn=S.hintUsed[id]||0;
+  var imgs=(q.images||[]).filter(function(im){return im&&im.url;});
 
-/* 回答 */
+  /* 画像エリア */
+  var imgHtml='';
+  if(imgs.length>0){
+    imgHtml='<div class="modal-imgs">';
+    for(var j=0;j<imgs.length;j++)
+      imgHtml+='<div class="modal-img-item'+(imgs.length>1?" multi":"")+'"><img src="'+imgs[j].url+'" alt=""></div>';
+    imgHtml+='</div>';
+  }else{
+    imgHtml='<div class="modal-no-img"></div>';
+  }
+  document.getElementById("modal-imgs-area").innerHTML=imgHtml;
+
+  /* ヒント */
+  var hints=q.hints||[],hintH="";
+  for(var k=0;k<hints.length;k++){
+    var hh=hints[k],ht=(typeof hh==="string")?hh:(hh.text||"");
+    var himg=(typeof hh==="object"&&hh.img)?'<div class="hint-himg"><img src="'+hh.img+'" alt=""></div>':"";
+    hintH+='<div class="hint-item'+((S.hintLevel[id]||0)>k?" show":"")+'">'+ht+himg+'</div>';
+  }
+
+  /* コンテンツ */
+  var content='<div class="modal-hdr">'
+    +'<div class="modal-no">'+q.no+'</div>'
+    +'<div class="modal-title">'+q.title+'</div>'
+    +'<button class="modal-close" onclick="closeModal()">とじる</button>'
+    +'</div>';
+  if(q.hook)content+='<div class="modal-hook">'+q.hook+'</div>';
+  if(q.story&&!solved)content+='<div class="modal-story">📖 '+q.story+'</div>';
+  content+='<div class="modal-q">'+(q.q||"").replace(/\n/g,"<br>")+'</div>';
+
+  if(solved){
+    content+='<div class="solved-msg">'+(q.sEmoji||"✓")+" 正解！スタンプゲット！</div>";
+    if(q.nextGuide)content+='<div class="next-guide">'+q.nextGuide+'</div>';
+  }else{
+    content+='<div class="ans-row">'
+      +'<input class="ans-inp" id="minp" placeholder="こたえを入力…" maxlength="40" onkeydown="if(event.key===\'Enter\')doAns('+id+')">'
+      +'<button class="ans-btn" onclick="doAns('+id+')">送信</button>'
+      +'</div>'
+      +'<div class="ans-fb" id="mfb"></div>'
+      +'<button class="hint-btn" onclick="doHint('+id+')">💡 ヒントを見る <span class="hint-cnt">'+hn+'</span></button>'
+      +hintH;
+  }
+
+  document.getElementById("modal-content").innerHTML=content;
+  document.getElementById("modal-mask").classList.add("on");
+  document.getElementById("modal-mask").onclick=function(e){if(e.target===this)closeModal();};
+}
+function closeModal(){document.getElementById("modal-mask").classList.remove("on");}
+
+/* ── 回答 ── */
 function norm(s){return s.trim().toLowerCase().replace(/[Ａ-Ｚａ-ｚ０-９]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-0xFEE0);}).replace(/\s/g,"");}
 function doAns(id){
-  var inp=document.getElementById("ai-"+id),fb=document.getElementById("fb-"+id),q=null;
-  for(var i=0;i<quizData.length;i++){if(quizData[i].id===id){q=quizData[i];break;}}
+  var inp=document.getElementById("minp"),fb=document.getElementById("mfb");
+  var q=null;for(var i=0;i<quizData.length;i++){if(quizData[i].id===id){q=quizData[i];break;}}
   if(!q||!inp||!norm(inp.value))return;
   if(norm(inp.value)===norm(q.ans)){
     fb.textContent="🎉 せいかい！スタンプをゲットしました！";fb.className="ans-fb ok";
     S.stamps.push(id);showAch(q);
     var qs=pub(),allOK=true;
     for(var j=0;j<qs.length;j++){if(S.stamps.indexOf(qs[j].id)===-1){allOK=false;break;}}
-    setTimeout(function(){S.openId=null;renderAll();if(allOK)showPop();},900);
+    setTimeout(function(){closeModal();renderAll();if(allOK)showPop();},900);
   }else{
     var ngs=["おしい！もう一度考えてみよう💪","ちがうかも！ヒントを使ってみて😊","惜しい！家族で相談してみよう！","もう少し！パネルをもう一度見てみよう👀"];
     fb.textContent=ngs[Math.floor(Math.random()*ngs.length)];fb.className="ans-fb ng";inp.value="";inp.focus();
@@ -672,10 +611,11 @@ function doHint(id){
   var q=null;for(var i=0;i<quizData.length;i++){if(quizData[i].id===id){q=quizData[i];break;}}
   if(!q)return;var cur=S.hintLevel[id]||0;
   if(cur>=(q.hints||[]).length){toast("これ以上ヒントはありません",true);return;}
-  S.hintUsed[id]=(S.hintUsed[id]||0)+1;S.hintLevel[id]=cur+1;renderSpots();toast("ヒント"+(cur+1)+"を表示！");
+  S.hintUsed[id]=(S.hintUsed[id]||0)+1;S.hintLevel[id]=cur+1;
+  openSpot(id);toast("ヒント"+(cur+1)+"を表示！");
 }
 
-/* 達成演出 */
+/* ── 達成演出 ── */
 function showAch(q){
   var qs=pub(),rem=qs.length-S.stamps.length;
   document.getElementById("ach-emoji").textContent=q.sEmoji||"⭐";
@@ -685,7 +625,7 @@ function showAch(q){
   setTimeout(function(){ov.classList.remove("on");},2400);
 }
 
-/* 全問正解ポップアップ */
+/* ── 全問正解 ── */
 function showPop(){
   var best=null;
   for(var i=0;i<rewardData.length;i++){if(rewardData[i].allClear){best=rewardData[i];break;}}
@@ -705,7 +645,7 @@ function confetti(){
   },idx*40);})(i);}
 }
 
-/* 特典 */
+/* ── 特典 ── */
 function renderRewards(){
   var e=S.stamps.length,h="";
   for(var i=0;i<rewardData.length;i++){
@@ -718,7 +658,7 @@ function renderRewards(){
   document.getElementById("rewards-list").innerHTML=h;
 }
 
-/* ニックネーム */
+/* ── ニックネーム ── */
 function setNick(){
   var n=document.getElementById("nick-inp").value.trim();
   if(!n){toast("ニックネームを入力してください",true);return;}
@@ -733,7 +673,7 @@ function resetNick(){
   document.getElementById("nshow").classList.remove("on");
 }
 
-/* トースト */
+/* ── トースト ── */
 function toast(msg,err){
   var w=document.getElementById("toast-wrap"),t=document.createElement("div");
   t.className="toast"+(err?" err":"");t.textContent=msg;w.appendChild(t);
